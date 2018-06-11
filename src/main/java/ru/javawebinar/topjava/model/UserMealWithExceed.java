@@ -24,4 +24,14 @@ public class UserMealWithExceed {
     public boolean isExceeded() {
         return day.isExceeded();
     }
+
+    @Override
+    public String toString() {
+        return "UserMealWithExceed{" +
+                "dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", isExceed =" + day.isExceeded() +
+                '}';
+    }
 }
