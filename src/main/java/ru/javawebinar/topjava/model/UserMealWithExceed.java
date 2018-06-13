@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.util.Day;
-
 import java.time.LocalDateTime;
 
 
