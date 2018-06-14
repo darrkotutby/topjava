@@ -32,8 +32,8 @@ public class UserMealsUtil {
         return mealList.stream()
                 .peek(userMeal -> {
                     AtomicInteger calories = map.getOrDefault(userMeal.getDateTime().toLocalDate(),
-                            new AtomicInteger(caloriesPerDay));
-                    calories.addAndGet(-userMeal.getCalories());
+                            new AtomicInteger(0));
+                    calories.addAndGet(userMeal.getCalories());
                     map.put(userMeal.getDateTime().toLocalDate(), calories);
                 })
                 .filter(userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
@@ -49,8 +49,8 @@ public class UserMealsUtil {
         List<UserMealWithExceed> userMealWithExceedList = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
             AtomicInteger calories = days.getOrDefault(userMeal.getDateTime().toLocalDate(),
-                    new AtomicInteger(caloriesPerDay));
-            calories.addAndGet(-userMeal.getCalories());
+                    new AtomicInteger(0));
+            calories.addAndGet(userMeal.getCalories());
             days.put(userMeal.getDateTime().toLocalDate(), calories);
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                 userMealWithExceedList.add(new UserMealWithExceed(userMeal.getDateTime(),
