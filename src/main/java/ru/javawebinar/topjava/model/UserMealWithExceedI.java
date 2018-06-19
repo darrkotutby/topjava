@@ -26,7 +26,7 @@ public class UserMealWithExceedI {
                 "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
-                ", isExceed =" + exceeded +
+                ", isExceed =" + exceeded.get() +
                 '}';
     }
 }

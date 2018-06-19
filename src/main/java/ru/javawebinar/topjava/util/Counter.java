@@ -11,13 +11,10 @@ public class Counter {
         this.i = 0;
     }
 
-    public int get() {
-        return i;
+    public Boolean get() {
+        return i < 0;
     }
 
-    public void set(int i) {
-        this.i = i;
-    }
 
     public Counter add(int i) {
         this.i += i;

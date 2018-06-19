@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.UserMeal;
-import ru.javawebinar.topjava.model.UserMealWithExceed;
+import ru.javawebinar.topjava.model.UserMealWithExceedL;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,53 +11,50 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-public class MedianCollectorTest implements Collector<UserMeal, HashMap<LocalDate, Integer>, List<UserMealWithExceed>> {
+public class ListCollector implements Collector<UserMeal, List<UserMealWithExceedL>, List<UserMealWithExceedL>> {
     private int caloriesPerDay;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private List<UserMeal> list;
+    private Map<LocalDate, Integer> map;
 
-    public MedianCollectorTest(int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
+    public ListCollector(int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
         this.caloriesPerDay = caloriesPerDay;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.list = new ArrayList<>();
+        this.map = new HashMap<>();
     }
 
     @Override
-    public Supplier<HashMap<LocalDate, Integer>> supplier() {
-        return HashMap::new;
+    public Supplier<List<UserMealWithExceedL>> supplier() {
+        return ArrayList::new;
     }
 
     @Override
-    public BiConsumer<HashMap<LocalDate, Integer>, UserMeal> accumulator() {
-        return (map, userMeal) -> {
+    public BiConsumer<List<UserMealWithExceedL>, UserMeal> accumulator() {
+        return (list, userMeal) -> {
             LocalDate localDate = userMeal.getDateTime().toLocalDate();
             map.put(localDate, map.getOrDefault(localDate, caloriesPerDay) - userMeal.getCalories());
+
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-                list.add(userMeal);
+                list.add(new UserMealWithExceedL(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), () -> map.get(userMeal.getDate()) < 0));
             }
         };
     }
 
     @Override
-    public BinaryOperator<HashMap<LocalDate, Integer>> combiner() {
+    public BinaryOperator<List<UserMealWithExceedL>> combiner() {
         return (l, r) -> {
-            l.putAll(r);
+            l.addAll(r);
             return l;
         };
     }
 
     @Override
-    public Function<HashMap<LocalDate, Integer>, List<UserMealWithExceed>> finisher() {
+    public Function<List<UserMealWithExceedL>, List<UserMealWithExceedL>> finisher() {
         return s -> {
-            return list.stream().map(userMeal -> new UserMealWithExceed(userMeal.getDateTime(),
-                    userMeal.getDescription(),
-                    userMeal.getCalories(),
-                    s.get(userMeal.getDateTime().toLocalDate()) < 0)).collect(Collectors.toList());
+            return s;
         };
     }
 
