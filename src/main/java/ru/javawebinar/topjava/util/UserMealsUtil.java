@@ -24,22 +24,22 @@ public class UserMealsUtil {
         );
         List<UserMealWithExceed> list1 = getFilteredWithExceededByStream(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         List<UserMealWithExceed> list2 = getFilteredWithExceededByLoop(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        List<UserMealWithExceedI> list3 = getFilteredWithExceededByLoopI(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<UserMealWithExceedI> list3 = getFilteredWithExceededByLoopWithAdditionalClass(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         System.out.println(list1);
         System.out.println(list2);
         System.out.println(list3);
 
-        List<UserMealWithExceedL> list5 = Test(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<UserMealWithExceedL> list5 = getFilteredWithExceededByStreamWithCustomCollector(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         System.out.println(list5);
     }
 
-    public static List<UserMealWithExceedL> Test(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExceedL> getFilteredWithExceededByStreamWithCustomCollector(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
         return mealList.stream()
                 .collect(new ListCollector(caloriesPerDay, startTime, endTime));
     }
 
-    public static List<UserMealWithExceedL> TestL(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExceedL> getFilteredWithExceededByLoopWithLambda(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
         Map<LocalDate, Integer> days = new HashMap<>();
         List<UserMealWithExceedL> userMealWithExceedList = new ArrayList<>();
@@ -88,7 +88,7 @@ public class UserMealsUtil {
         return userMealWithExceedList;
     }
 
-    public static List<UserMealWithExceedI> getFilteredWithExceededByLoopI(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExceedI> getFilteredWithExceededByLoopWithAdditionalClass(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Counter> days = new HashMap<>();
         List<UserMealWithExceedI> userMealWithExceedListI = new ArrayList<>();
         for (UserMeal userMeal : mealList) {

@@ -33,7 +33,7 @@ public class BenchMark {
     @Warmup(iterations = 5)
     public void benchGetFilteredWithExceededByLoopI(ExecutionPlan plan) {
 
-        UserMealsUtil.getFilteredWithExceededByLoopI(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        UserMealsUtil.getFilteredWithExceededByLoopWithAdditionalClass(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
 
     }
 
@@ -55,7 +55,7 @@ public class BenchMark {
     @Warmup(iterations = 5)
     public void benchTest(ExecutionPlan plan) {
 
-        UserMealsUtil.Test(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        UserMealsUtil.getFilteredWithExceededByStreamWithCustomCollector(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
 
     }
 
@@ -66,7 +66,7 @@ public class BenchMark {
     @Warmup(iterations = 5)
     public void benchTestL(ExecutionPlan plan) {
 
-        UserMealsUtil.TestL(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        UserMealsUtil.getFilteredWithExceededByLoopWithLambda(plan.mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
 
     }
 
