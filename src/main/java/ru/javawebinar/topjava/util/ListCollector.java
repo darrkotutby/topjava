@@ -38,7 +38,8 @@ public class ListCollector implements Collector<UserMeal, List<UserMealWithExcee
             map.put(localDate, map.getOrDefault(localDate, caloriesPerDay) - userMeal.getCalories());
 
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-                list.add(new UserMealWithExceedL(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), () -> map.get(userMeal.getDate()) < 0));
+                LocalDate date = userMeal.getDate();
+                list.add(new UserMealWithExceedL(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), () -> map.get(date) < 0));
             }
         };
     }

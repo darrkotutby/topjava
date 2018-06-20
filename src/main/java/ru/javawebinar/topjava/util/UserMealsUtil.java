@@ -29,8 +29,12 @@ public class UserMealsUtil {
         System.out.println(list2);
         System.out.println(list3);
 
-        List<UserMealWithExceedL> list5 = getFilteredWithExceededByStreamWithCustomCollector(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        List<UserMealWithExceedL> list5 = getFilteredWithExceededByLoopWithLambda(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         System.out.println(list5);
+
+        List<UserMealWithExceedL> list6 = getFilteredWithExceededByLoopWithLambda(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        System.out.println(list5);
+
     }
 
     public static List<UserMealWithExceedL> getFilteredWithExceededByStreamWithCustomCollector(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -46,11 +50,13 @@ public class UserMealsUtil {
         for (UserMeal userMeal : mealList) {
             days.put(userMeal.getDateTime().toLocalDate(), days.getOrDefault(userMeal.getDateTime().toLocalDate(),
                     caloriesPerDay) - userMeal.getCalories());
+
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
+                LocalDate date = userMeal.getDateTime().toLocalDate();
                 userMealWithExceedList.add(new UserMealWithExceedL(userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        () -> days.get(userMeal.getDateTime().toLocalDate()) < 0));
+                        () -> days.get(date) < 0));
             }
         }
         return userMealWithExceedList;
