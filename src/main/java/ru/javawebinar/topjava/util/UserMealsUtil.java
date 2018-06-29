@@ -32,8 +32,8 @@ public class UserMealsUtil {
         List<UserMealWithExceedL> list5 = getFilteredWithExceededByLoopWithLambda(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         System.out.println(list5);
 
-        List<UserMealWithExceedL> list6 = getFilteredWithExceededByLoopWithLambda(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        System.out.println(list5);
+      /*  List<UserMealWithExceedL> list6 = getFilteredWithExceededByStreamWithCustomCollector(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        System.out.println(list6); */
 
     }
 
@@ -43,9 +43,15 @@ public class UserMealsUtil {
                 .collect(new ListCollector(caloriesPerDay, startTime, endTime));
     }
 
+    public static List<UserMealWithExceedI> getFilteredWithExceededByStreamWithCustomCollectorV(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+
+        return mealList.stream()
+                .collect(new ListCollectorV(caloriesPerDay, startTime, endTime));
+    }
+
     public static List<UserMealWithExceedL> getFilteredWithExceededByLoopWithLambda(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        Map<LocalDate, Integer> days = new HashMap<>();
+        HashMap<LocalDate, Integer> days = new HashMap<>();
         List<UserMealWithExceedL> userMealWithExceedList = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
             days.put(userMeal.getDateTime().toLocalDate(), days.getOrDefault(userMeal.getDateTime().toLocalDate(),
@@ -56,10 +62,14 @@ public class UserMealsUtil {
                 userMealWithExceedList.add(new UserMealWithExceedL(userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        () -> days.get(date) < 0));
+                        () -> getDayCalories(days, date) < 0));
             }
         }
         return userMealWithExceedList;
+    }
+
+    private static Integer getDayCalories(Map<LocalDate, Integer> days, LocalDate date) {
+        return days.get(date);
     }
 
 
@@ -72,7 +82,7 @@ public class UserMealsUtil {
                 .map(userMeal -> new UserMealWithExceed(userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        map.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+                        getDayCalories(map, userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +90,7 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> days = new HashMap<>();
         for (UserMeal userMeal : mealList) {
             days.put(userMeal.getDateTime().toLocalDate(), days.getOrDefault(userMeal.getDateTime().toLocalDate(),
-                    0) + userMeal.getCalories());
+                    caloriesPerDay) - userMeal.getCalories());
         }
         List<UserMealWithExceed> userMealWithExceedList = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
@@ -88,7 +98,7 @@ public class UserMealsUtil {
                 userMealWithExceedList.add(new UserMealWithExceed(userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
-                        days.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay));
+                        getDayCalories(days, userMeal.getDateTime().toLocalDate()) < 0));
             }
         }
         return userMealWithExceedList;
