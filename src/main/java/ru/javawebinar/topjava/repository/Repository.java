@@ -19,4 +19,8 @@ public interface Repository<T extends Entity> {
     boolean exists(T t);
 
     List<T> query(Predicate<T> predicate);
+
+    T getById(int id);
+
+    T getByPk(T t);
 }

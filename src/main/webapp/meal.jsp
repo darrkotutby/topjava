@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
 
 <c:set var="edited" value="Meal id=${meal.id}"/>
 <c:set var="title" scope="request" value="${meal.id == 0 ? 'New user' : edited}"/>
@@ -17,21 +18,33 @@
 <section>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="id" value="${meal.id}">
-
         <dl>
             <dt>User*</dt>
             <dd>
-                <select name="user" required>
-                    <c:forEach items="${users}" var="user">
-                        <option value="${user.id}"
-                                selected=${meal.user.id == user.id ? 'selected' : ''}>${user.login}</option>
-                    </c:forEach>
-                </select>
+                <c:choose>
+                    <c:when test="${meal.id != 0}">
+                        <input type="hidden" name="user" value="${meal.user.id}">
+                        <input type="text" name="user1" size=50
+                               value="${meal.user.fullName}" ${meal.id > 0 ? 'readonly' : ''} required>
+                    </c:when>
+                    <c:otherwise>
+                        <select name="user" required>
+                            <c:forEach items="${users}" var="user">
+                                <option value="${user.id}"
+                                    ${meal.user.id == user.id ? 'selected' : ''}>${user.fullName}</option>
+                            </c:forEach>
+                        </select>
+                    </c:otherwise>
+                </c:choose>
             </dd>
         </dl>
         <dl>
             <dt>Date/Time*</dt>
-            <dd><input type="datetime-local" name="dateTime" size=50 value="${meal.dateTime}" required></dd>
+            <dd><input type="text" name="dateTime" size=50
+                       value="${meal.dateTime.format(TimeUtil.getFormatter())}" ${meal.id > 0 ? 'readonly' : ''}
+                       required
+                       pattern="(0[1-9]|[12][0-9]|3[01])[- -.](0[1-9]|1[012])[- -.](19|20|30)\d\d[- - ](0[0-9]|1[0-9]|2[0-4])[- -:]([0-5][0-9])[- -:]([0-5][0-9])"
+                       title="DD.MM.YYYY HH:MI:SS"></dd>
         </dl>
         <dl>
             <dt>Description</dt>

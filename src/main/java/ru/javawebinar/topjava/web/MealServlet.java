@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.Repository;
+import ru.javawebinar.topjava.repository.exception.NotExistsException;
 import ru.javawebinar.topjava.repository.memoryrepository.MealMemoryRepository;
 import ru.javawebinar.topjava.repository.memoryrepository.UserMemoryRepository;
 import ru.javawebinar.topjava.util.FillUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.TimeUtil;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,7 +31,7 @@ public class MealServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        FillUtil.getMealList().forEach(repository::add);
+        FillUtil.getMealList(userRepository.query(u -> true)).forEach(repository::add);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
@@ -49,7 +51,7 @@ public class MealServlet extends HttpServlet {
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
 
-        LocalDateTime localDateTime = LocalDateTime.parse(dates);
+        LocalDateTime localDateTime = LocalDateTime.parse(dates, TimeUtil.getFormatter());
 
         Meal meal = new Meal(localDateTime, description, calories, id, user);
 
@@ -86,9 +88,13 @@ public class MealServlet extends HttpServlet {
 
             int id1 = id;
 
+
             switch (action) {
                 case "delete":
-                    meal = repository.query(u -> u.getId() == id1).get(0);
+                    meal = repository.getById(id1);
+                    if (meal == null) {
+                        throw new NotExistsException("Meal with id=" + id + " does not exist");
+                    }
                     repository.delete(meal);
                     response.sendRedirect("meals");
                     return;
@@ -97,7 +103,10 @@ public class MealServlet extends HttpServlet {
                     MealEdit(request, response, meal);
                     return;
                 case "edit":
-                    meal = repository.query(u -> u.getId() == id1).get(0);
+                    meal = repository.getById(id1);
+                    if (meal == null) {
+                        throw new NotExistsException("Meal with id=" + id + " does not exist");
+                    }
                     MealEdit(request, response, meal);
                     return;
                 default:

@@ -77,18 +77,15 @@ public class UserServlet extends HttpServlet {
 
             switch (action) {
                 case "delete":
-                    user = repository.query(u -> u.getId() == id1).get(0);
-                    repository.delete(user);
+                    repository.delete(repository.getById(id1));
                     response.sendRedirect("users");
                     return;
                 case "new":
-                    user = new User();
-                    request.setAttribute("user", user);
+                    request.setAttribute("user", new User());
                     request.getRequestDispatcher("user.jsp").forward(request, response);
                     return;
                 case "edit":
-                    user = repository.query(u -> u.getId() == id1).get(0);
-                    request.setAttribute("user", user);
+                    request.setAttribute("user", repository.getById(id1));
                     request.getRequestDispatcher("user.jsp").forward(request, response);
                     return;
                 default:

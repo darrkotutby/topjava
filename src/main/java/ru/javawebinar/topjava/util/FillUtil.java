@@ -16,10 +16,10 @@ public class FillUtil {
                 new User("AWP", "Test2", 2000));
     }
 
-    public static List<Meal> getMealList() {
+    public static List<Meal> getMealList(List<User> list) {
 
-        User user1 = getUserList().get(0);
-        User user2 = getUserList().get(1);
+        User user1 = list.get(0);
+        User user2 = list.get(1);
 
         return Arrays.asList(
                 new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500, user1),

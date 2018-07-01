@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.exception.ExistsException;
+import ru.javawebinar.topjava.repository.exception.NotExistsException;
 import ru.javawebinar.topjava.util.FillUtil;
 
 import java.util.Collections;
@@ -46,6 +48,12 @@ class UserMemoryRepositoryTest {
     }
 
     @Test
+    void addExisting() {
+        assertThrows(ExistsException.class, () -> repository.add(user1));
+        assertEquals(2, repository.count());
+    }
+
+    @Test
     void update() {
         User user = repository.query((User m) -> m.getLogin().equals("AWP")).get(0);
         user.setFullName("AWP_TEST");
@@ -61,10 +69,25 @@ class UserMemoryRepositoryTest {
     }
 
     @Test
+    void updateNotExisting() {
+        User test = new User("Test", "Test Test", 3000);
+        assertThrows(NotExistsException.class, () -> repository.update(test));
+        assertEquals(2, repository.count());
+    }
+
+
+    @Test
     void delete() {
         repository.delete(user1);
         assertEquals(1, repository.count());
         assertFalse(repository.exists(user1));
+    }
+
+    @Test
+    void deleteNotExisting() {
+        User test = new User("Test", "Test Test", 3000);
+        assertThrows(NotExistsException.class, () -> repository.delete(test));
+        assertEquals(2, repository.count());
     }
 
     @Test
@@ -73,6 +96,34 @@ class UserMemoryRepositoryTest {
         List<User> queriedUsers = repository.query((User m) -> m.getLogin().equalsIgnoreCase(user1.getLogin()));
         assertEquals(1, queriedUsers.size());
         assertEquals(expectedUsers, queriedUsers);
+    }
+
+    @Test
+    void getById() {
+        User expectedUser = repository.getByPk(user1);
+        User queriedUser = repository.getById(expectedUser.getId());
+        assertEquals(expectedUser, queriedUser);
+        assertEquals(expectedUser.getFullName(), queriedUser.getFullName());
+        assertEquals(expectedUser.getCaloriesPerDate(), queriedUser.getCaloriesPerDate());
+    }
+
+    @Test
+    void getByIdNotFound() {
+        assertThrows(NotExistsException.class, () -> repository.getById(-1));
+    }
+
+    @Test
+    void getByPk() {
+        User queriedUser = repository.getByPk(user1);
+        assertEquals(user1, queriedUser);
+        assertEquals(user1.getFullName(), queriedUser.getFullName());
+        assertEquals(user1.getCaloriesPerDate(), queriedUser.getCaloriesPerDate());
+    }
+
+    @Test
+    void getByPkNotFound() {
+        User test = new User("Test", "Test Test", 3000);
+        assertThrows(NotExistsException.class, () -> repository.getByPk(test));
     }
 
     @AfterEach

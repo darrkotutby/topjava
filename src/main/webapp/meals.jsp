@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
+
 <html>
 <head>
     <title>Meal</title>
@@ -58,7 +60,7 @@
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealWithExceed"/>
             <tr data-mealExceed=${meal.exceed}>
                 <td>${meal.id}</td>
-                <td>${meal.dateTime}</td>
+                <td>${meal.dateTime.format(TimeUtil.getFormatter())}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
                 <td>${meal.user.fullName}</td>

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.exception.ExistsException;
+import ru.javawebinar.topjava.repository.exception.NotExistsException;
 import ru.javawebinar.topjava.util.FillUtil;
 
 import java.time.LocalDateTime;
@@ -18,18 +20,20 @@ class MealMemoryRepositoryTest {
 
     private MealMemoryRepository repository = MealMemoryRepository.getRepository();
 
-    private User user1 = FillUtil.getUserList().get(0);
+    private List<User> userList = FillUtil.getUserList();
+    private User user1 = userList.get(0);
 
-    private Meal meal1 = FillUtil.getMealList().get(0);
-    private Meal meal2 = FillUtil.getMealList().get(1);
-    private Meal meal5 = FillUtil.getMealList().get(4);
-    private Meal meal8 = FillUtil.getMealList().get(7);
-    private Meal meal11 = FillUtil.getMealList().get(10);
+    private List<Meal> mealList = FillUtil.getMealList(userList);
+    private Meal meal1 = mealList.get(0);
+    private Meal meal2 = mealList.get(1);
+    private Meal meal5 = mealList.get(4);
+    private Meal meal8 = mealList.get(7);
+    private Meal meal11 = mealList.get(10);
 
 
     @BeforeEach
     void init() {
-        FillUtil.getMealList().forEach(meal -> repository.add(meal));
+        mealList.forEach(meal -> repository.add(meal));
     }
 
     @Test
@@ -57,6 +61,12 @@ class MealMemoryRepositoryTest {
     }
 
     @Test
+    void addExisting() {
+        assertThrows(ExistsException.class, () -> repository.add(meal1));
+        assertEquals(12, repository.count());
+    }
+
+    @Test
     void update() {
         Meal meal = repository.query((Meal m) -> m.equals(meal1)).get(0);
         meal.setDescription("Второй завтрак");
@@ -71,10 +81,24 @@ class MealMemoryRepositoryTest {
     }
 
     @Test
+    void updateNotExisting() {
+        Meal test = new Meal(LocalDateTime.of(2018, Month.MAY, 30, 10, 0), "Завтрак", 500, user1);
+        assertThrows(NotExistsException.class, () -> repository.delete(test));
+        assertEquals(12, repository.count());
+    }
+
+    @Test
     void delete() {
         repository.delete(meal1);
         assertEquals(11, repository.count());
         assertFalse(repository.exists(meal1));
+    }
+
+    @Test
+    void deleteNotExisting() {
+        Meal test = new Meal(LocalDateTime.of(2018, Month.MAY, 30, 10, 0), "Завтрак", 500, user1);
+        assertThrows(NotExistsException.class, () -> repository.delete(test));
+        assertEquals(12, repository.count());
     }
 
     @Test
@@ -83,6 +107,35 @@ class MealMemoryRepositoryTest {
         List<Meal> queriedMeals = repository.query((Meal m) -> m.getDescription().equalsIgnoreCase("ОБЕД"));
         assertEquals(4, queriedMeals.size());
         assertEquals(expectedMeals, queriedMeals);
+    }
+
+    @Test
+    void getById() {
+        Meal expectedMeal = repository.getByPk(meal1);
+        Meal queriedMeal = repository.getById(expectedMeal.getId());
+        assertEquals(expectedMeal, queriedMeal);
+        assertEquals(expectedMeal.getDateTime(), queriedMeal.getDateTime());
+        assertEquals(expectedMeal.getCalories(), queriedMeal.getCalories());
+    }
+
+    @Test
+    void getByIdNotFound() {
+        assertThrows(NotExistsException.class, () -> repository.getById(500));
+    }
+
+    @Test
+    void getByPk() {
+        Meal queriedMeal = repository.getByPk(meal1);
+        assertEquals(meal1, queriedMeal);
+        assertEquals(meal1.getDateTime(), queriedMeal.getDateTime());
+        assertEquals(meal1.getCalories(), queriedMeal.getCalories());
+    }
+
+    @Test
+    void getByPkNotFound() {
+        Meal test = new Meal(LocalDateTime.of(2018, Month.MAY, 30, 10, 0), "Завтрак", 500, user1);
+        assertThrows(NotExistsException.class, () -> repository.getByPk(test));
+
     }
 
     @AfterEach

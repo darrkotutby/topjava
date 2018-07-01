@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
     public static void main(String[] args) {
-        List<Meal> meals = FillUtil.getMealList();
+        List<Meal> meals = FillUtil.getMealList(FillUtil.getUserList());
 
         List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(meals, LocalTime.of(7, 0), LocalTime.of(12, 0));
         mealsWithExceeded.forEach(System.out::println);
