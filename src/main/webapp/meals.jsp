@@ -43,7 +43,7 @@
 <section>
     <table cellpadding="8" cellspacing="0" align=center>
         <tr>
-            <td style="border: 0px solid #808080;">
+            <td style="border: 0 solid #808080;">
                 <a href="meals?action=new"><img src="img/add.png"> Add new meal</a>
             </td>
         </tr>
@@ -52,7 +52,6 @@
             <th>Date/Time</th>
             <th>Description</th>
             <th>Calories</th>
-            <th>User</th>
             <th></th>
             <th></th>
         </tr>
@@ -63,7 +62,6 @@
                 <td>${meal.dateTime.format(TimeUtil.getFormatter())}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td>${meal.user.fullName}</td>
                 <td><a href="meals?id=${meal.id}&action=delete"><img src="img/delete.png"></a></td>
                 <td><a href="meals?id=${meal.id}&action=edit"><img src="img/pencil.png"></a></td>
             </tr>

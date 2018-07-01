@@ -5,28 +5,28 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class Meal extends Entity {
+public class Meal {
     private LocalDateTime dateTime;
-    private User user;
 
     private String description;
 
     private int calories;
 
-    public Meal(LocalDateTime dateTime, String description, int calories, User user) {
-        this(dateTime, description, calories, 0, user);
+    private int id;
+
+    public Meal(LocalDateTime dateTime, String description, int calories) {
+        this(dateTime, description, calories, 0);
     }
 
-    public Meal(LocalDateTime dateTime, String description, int calories, int id, User user) {
-        super(id);
+    public Meal(LocalDateTime dateTime, String description, int calories, int id) {
+        this.id = id;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.user = user;
     }
 
     public Meal() {
-        super(0);
+
     }
 
     public LocalDateTime getDateTime() {
@@ -49,10 +49,6 @@ public class Meal extends Entity {
         this.calories = calories;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public LocalDate getDate() {
         return dateTime.toLocalDate();
     }
@@ -61,28 +57,35 @@ public class Meal extends Entity {
         return dateTime.toLocalTime();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Meal meal = (Meal) o;
-        return Objects.equals(dateTime, meal.dateTime) &&
-                Objects.equals(user, meal.user);
+        return Objects.equals(dateTime, meal.dateTime);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(dateTime, user);
+        return Objects.hash(dateTime);
     }
 
     @Override
     public String toString() {
         return "Meal{" +
                 "dateTime=" + dateTime +
-                ", user=" + user +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
+                ", id=" + id +
                 "} " + super.toString();
     }
 }

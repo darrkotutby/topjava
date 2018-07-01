@@ -19,26 +19,6 @@
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
-            <dt>User*</dt>
-            <dd>
-                <c:choose>
-                    <c:when test="${meal.id != 0}">
-                        <input type="hidden" name="user" value="${meal.user.id}">
-                        <input type="text" name="user1" size=50
-                               value="${meal.user.fullName}" ${meal.id > 0 ? 'readonly' : ''} required>
-                    </c:when>
-                    <c:otherwise>
-                        <select name="user" required>
-                            <c:forEach items="${users}" var="user">
-                                <option value="${user.id}"
-                                    ${meal.user.id == user.id ? 'selected' : ''}>${user.fullName}</option>
-                            </c:forEach>
-                        </select>
-                    </c:otherwise>
-                </c:choose>
-            </dd>
-        </dl>
-        <dl>
             <dt>Date/Time*</dt>
             <dd><input type="text" name="dateTime" size=50
                        value="${meal.dateTime.format(TimeUtil.getFormatter())}" ${meal.id > 0 ? 'readonly' : ''}
@@ -55,8 +35,10 @@
             <dd><input type="number" name="calories" size=50 value="${meal.calories}" min="0" required></dd>
         </dl>
         <button type="submit" name="save" value="1">Save</button>
-        <button onclick="window.history.back()" name="CancelEdit" value="1">Cancel</button>
+        <button type="button" onclick="window.history.back()" name="CancelEdit" value="1">Cancel</button>
     </form>
+
+
 </section>
 </body>
 </html>

@@ -1,26 +1,18 @@
 package ru.javawebinar.topjava.repository;
 
-import ru.javawebinar.topjava.model.Entity;
-
 import java.util.List;
 import java.util.function.Predicate;
 
-public interface Repository<T extends Entity> {
-    int count();
-
-    void clear();
+public interface Repository<T> {
 
     T add(T t);
 
     void update(T t);
 
-    void delete(T t);
+    void delete(int id);
 
-    boolean exists(T t);
+    T get(int id);
 
-    List<T> query(Predicate<T> predicate);
+    List<T> read(Predicate<T> p);
 
-    T getById(int id);
-
-    T getByPk(T t);
 }
