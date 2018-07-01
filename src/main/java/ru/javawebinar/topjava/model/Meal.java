@@ -6,8 +6,8 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class Meal extends Entity {
-    private final LocalDateTime dateTime;
-    private final User user;
+    private LocalDateTime dateTime;
+    private User user;
 
     private String description;
 
@@ -23,6 +23,10 @@ public class Meal extends Entity {
         this.description = description;
         this.calories = calories;
         this.user = user;
+    }
+
+    public Meal() {
+        super(0);
     }
 
     public LocalDateTime getDateTime() {

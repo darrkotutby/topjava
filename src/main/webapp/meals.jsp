@@ -42,7 +42,7 @@
     <table cellpadding="8" cellspacing="0" align=center>
         <tr>
             <td style="border: 0px solid #808080;">
-                <a href="meal?action=new"><img src="img/add.png"> Add new meal</a>
+                <a href="meals?action=new"><img src="img/add.png"> Add new meal</a>
             </td>
         </tr>
         <tr>

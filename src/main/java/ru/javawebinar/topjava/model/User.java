@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.model;
 import java.util.Objects;
 
 public class User extends Entity {
-    private final String login;
+    private String login;
 
     private String fullName;
 
@@ -18,6 +18,10 @@ public class User extends Entity {
         this.login = login;
         this.fullName = fullName;
         this.caloriesPerDate = caloriesPerDate;
+    }
+
+    public User() {
+        super(0);
     }
 
     public String getLogin() {
