@@ -12,21 +12,8 @@ import java.util.stream.Collectors;
 
 public class MealMemoryRepository implements Repository<Meal> {
 
-    // private static MealMemoryRepository repository;
-
     private final Map<Integer, Meal> items = new ConcurrentHashMap<>();
     private final AtomicInteger sequence = new AtomicInteger(0);
-
-    /*  public static MealMemoryRepository getRepository() {
-        if (repository == null) {
-            synchronized (MealMemoryRepository.class) {
-                if (repository == null) {
-                    repository = new MealMemoryRepository();
-                }
-            }
-        }
-        return repository;
-    } */
 
     @Override
     public Meal add(Meal meal) {
@@ -52,17 +39,8 @@ public class MealMemoryRepository implements Repository<Meal> {
     }
 
     @Override
-    public List<Meal> read(Predicate<Meal> p) {
+    public List<Meal> query(Predicate<Meal> p) {
         return items.values().stream().filter(p).map(this::cloneMeal).collect(Collectors.toList());
-    }
-
-    public void clear() {
-        items.clear();
-        sequence.set(0);
-    }
-
-    public int count() {
-        return items.size();
     }
 
     private int getSequenceNextVal() {

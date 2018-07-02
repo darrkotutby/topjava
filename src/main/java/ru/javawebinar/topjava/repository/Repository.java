@@ -13,6 +13,6 @@ public interface Repository<T> {
 
     T get(int id);
 
-    List<T> read(Predicate<T> p);
+    List<T> query(Predicate<T> p);
 
 }

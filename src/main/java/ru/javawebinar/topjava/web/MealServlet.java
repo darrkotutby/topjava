@@ -21,15 +21,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private static final Repository<Meal> repository = new MealMemoryRepository();
+    private static Repository<Meal> repository;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
+        repository = new MealMemoryRepository();
         FillUtil.getMealList().forEach(repository::add);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         int id = Integer.parseInt(request.getParameter("id"));
@@ -45,38 +46,37 @@ public class MealServlet extends HttpServlet {
         response.sendRedirect("meals");
     }
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String ids = request.getParameter("id");
-        if (action != null && (!action.equals("new") && ids != null || action.equals("new"))) {
-            Meal meal;
-            switch (action) {
-                case "delete": {
-                    int id = Integer.parseInt(ids);
-                    repository.delete(id);
-                    response.sendRedirect("meals");
-                    return;
-                }
-                case "new": {
-                    meal = new Meal();
-                    MealEdit(request, response, meal);
-                    return;
-                }
-                case "edit": {
-                    int id = Integer.parseInt(ids);
-                    meal = repository.get(id);
-                    MealEdit(request, response, meal);
-                    return;
-                }
-            }
+
+        if (action == null || (action.equals("delete") || action.equals("edit")) && ids == null) {
+            action = "default";
         }
-        request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(repository.read(m -> true), LocalTime.MIN, LocalTime.MAX, 2000));
-        request.getRequestDispatcher("meals.jsp").forward(request, response);
+
+        switch (action) {
+            case "delete": {
+                int id = Integer.parseInt(ids);
+                repository.delete(id);
+                response.sendRedirect("meals");
+                return;
+            }
+            case "new": {
+                mealEdit(request, response, new Meal());
+                return;
+            }
+            case "edit": {
+                mealEdit(request, response, repository.get(Integer.parseInt(ids)));
+                return;
+            }
+            default:
+                request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(repository.query(m -> true), LocalTime.MIN, LocalTime.MAX, 2000));
+                request.getRequestDispatcher("meals.jsp").forward(request, response);
+        }
     }
 
-    private void MealEdit(HttpServletRequest request, HttpServletResponse response, Meal meal) throws ServletException, IOException {
+    private void mealEdit(HttpServletRequest request, HttpServletResponse response, Meal meal) throws ServletException, IOException {
         request.setAttribute("meal", meal);
         request.getRequestDispatcher("meal.jsp").forward(request, response);
     }

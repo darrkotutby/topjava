@@ -1,18 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="ru.javawebinar.topjava.util.TimeUtil" %>
-
-<html>
-<head>
-    <title>Meal</title>
-</head>
-<body>
-<h3><a href="index.html">Home</a></h3>
-<h2>Meals</h2>
-</body>
-</html>
-
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
@@ -41,6 +28,8 @@
 </head>
 <body>
 <section>
+    <h3><a href="index.html">Home</a></h3>
+    <h2>Meals</h2>
     <table cellpadding="8" cellspacing="0" align=center>
         <tr>
             <td style="border: 0 solid #808080;">
@@ -48,7 +37,6 @@
             </td>
         </tr>
         <tr>
-            <th>Id</th>
             <th>Date/Time</th>
             <th>Description</th>
             <th>Calories</th>
@@ -58,7 +46,6 @@
         <c:forEach items="${meals}" var="meal">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealWithExceed"/>
             <tr data-mealExceed=${meal.exceed}>
-                <td>${meal.id}</td>
                 <td>${meal.dateTime.format(TimeUtil.getFormatter())}</td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
