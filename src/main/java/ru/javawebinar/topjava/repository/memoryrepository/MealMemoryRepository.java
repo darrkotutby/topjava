@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.memoryrepository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +26,7 @@ public class MealMemoryRepository implements Repository<Meal> {
 
     @Override
     public void update(Meal meal) {
-        items.put(meal.getId(), meal);
+        items.put(meal.getId(), cloneMeal(meal));
     }
 
     @Override
@@ -36,6 +37,11 @@ public class MealMemoryRepository implements Repository<Meal> {
     @Override
     public Meal get(int id) {
         return cloneMeal(items.get(id));
+    }
+
+    @Override
+    public List<Meal> getAll() {
+        return new ArrayList<>(items.values());
     }
 
     @Override
@@ -51,7 +57,7 @@ public class MealMemoryRepository implements Repository<Meal> {
         if (meal == null) {
             return null;
         }
-        return new Meal(meal.getDateTime(), meal.getDescription(), meal.getCalories(), meal.getId());
+        return new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
     }
 
 }

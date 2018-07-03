@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web;
 
-import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.Repository;
 import ru.javawebinar.topjava.repository.memoryrepository.MealMemoryRepository;
@@ -17,10 +16,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 public class MealServlet extends HttpServlet {
-    private static final Logger log = getLogger(MealServlet.class);
+    // private static final Logger log = getLogger(MealServlet.class);
     private static Repository<Meal> repository;
 
     @Override
@@ -37,7 +34,7 @@ public class MealServlet extends HttpServlet {
         LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"), TimeUtil.getFormatter());
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        Meal meal = new Meal(localDateTime, description, calories, id);
+        Meal meal = new Meal(id, localDateTime, description, calories);
         if (id != 0) {
             repository.update(meal);
         } else {
@@ -71,7 +68,7 @@ public class MealServlet extends HttpServlet {
                 return;
             }
             default:
-                request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(repository.query(m -> true), LocalTime.MIN, LocalTime.MAX, 2000));
+                request.setAttribute("meals", MealsUtil.getFilteredWithExceeded(repository.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
                 request.getRequestDispatcher("meals.jsp").forward(request, response);
         }
     }
