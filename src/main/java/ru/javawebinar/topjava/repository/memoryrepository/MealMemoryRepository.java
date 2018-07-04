@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class MealMemoryRepository implements Repository<Meal> {
 
@@ -42,11 +40,6 @@ public class MealMemoryRepository implements Repository<Meal> {
     @Override
     public List<Meal> getAll() {
         return new ArrayList<>(items.values());
-    }
-
-    @Override
-    public List<Meal> query(Predicate<Meal> p) {
-        return items.values().stream().filter(p).map(this::cloneMeal).collect(Collectors.toList());
     }
 
     private int getSequenceNextVal() {
