@@ -17,6 +17,34 @@
     </style>
 </head>
 <body>
+
+<section>
+    <form method="get" action="meals">
+        <dl>
+            <dt>Date From:</dt>
+            <dd><input type="date" name="dateFrom" id="dateFrom"></dd>
+        </dl>
+        <dl>
+            <dt>Date To:</dt>
+            <dd><input type="date" name="dateTo" id="dateTo"></dd>
+        </dl>
+        <dl>
+            <dt>Time From:</dt>
+            <dd><input type="time" name="timeFrom" id="timeFrom"></dd>
+        </dl>
+        <dl>
+            <dt>Time To:</dt>
+            <dd><input type="time" name="timeTo" id="timeTo"></dd>
+        </dl>
+        <button type="submit">Filter</button>
+        <button onclick="javascript: {document.getElementById('dateFrom').value = '';
+                                      document.getElementById('dateTo').value = '';
+                                      document.getElementById('timeFrom').value = '';
+                                      document.getElementById('timeTo').value = '';}" type="button">Clear
+        </button>
+    </form>
+</section>
+
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>

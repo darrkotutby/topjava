@@ -26,4 +26,8 @@
         <url-pattern>/meals</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>ru.javawebinar.topjava.web.AuthentificationPropagationListener</listener-class>
+    </listener>
+
 </web-app>
