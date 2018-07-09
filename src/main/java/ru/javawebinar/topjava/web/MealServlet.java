@@ -12,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,12 +60,6 @@ public class MealServlet extends HttpServlet {
             controller.update(meal, Integer.valueOf(id));
         }
 
-        HttpSession session = request.getSession(true);
-        session.setAttribute("dateFrom", request.getParameter("dateFrom"));
-        session.setAttribute("dateTo", request.getParameter("dateTo"));
-        session.setAttribute("timeFrom", request.getParameter("timeFrom"));
-        session.setAttribute("timeTo", request.getParameter("timeTo"));
-
         response.sendRedirect("meals");
     }
 
@@ -77,35 +70,6 @@ public class MealServlet extends HttpServlet {
         String dt = request.getParameter("dateTo");
         String tf = request.getParameter("timeFrom");
         String tt = request.getParameter("timeTo");
-
-
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            if (df == null) {
-                df = (String) request.getSession(false).getAttribute("dateFrom");
-            } else {
-                session.setAttribute("dateFrom", df);
-            }
-
-            if (dt == null) {
-                dt = (String) request.getSession(false).getAttribute("dateTo");
-            } else {
-                session.setAttribute("dateTo", dt);
-            }
-
-            if (tf == null) {
-                tf = (String) request.getSession(false).getAttribute("timeFrom");
-            } else {
-                session.setAttribute("timeFrom", tf);
-            }
-
-            if (tt == null) {
-                tt = (String) request.getSession(false).getAttribute("timeTo");
-            } else {
-                session.setAttribute("timeTo", tt);
-            }
-        }
-
 
         String action = request.getParameter("action");
 

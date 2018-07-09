@@ -19,6 +19,10 @@
 <body>
 
 <section>
+
+    <h3><a href="index.html">Home</a></h3>
+    <h2>Meals</h2>
+    <hr/>
     <form method="get" action="meals">
         <dl>
             <dt>Date From:</dt>
@@ -43,13 +47,9 @@
                                       document.getElementById('timeTo').value = '';}" type="button">Clear
         </button>
     </form>
-</section>
-
-<section>
-    <h3><a href="index.html">Home</a></h3>
-    <h2>Meals</h2>
-    <a href="meals?action=create">Add Meal</a>
     <hr/>
+    <a href="meals?action=create">Add Meal</a>
+
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
