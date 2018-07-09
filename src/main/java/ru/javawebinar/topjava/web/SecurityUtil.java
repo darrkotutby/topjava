@@ -8,6 +8,7 @@ public class SecurityUtil {
 
     static {
         id = new ThreadLocal<>();
+        id.set(1);
     }
 
     public static int authUserCaloriesPerDay() {

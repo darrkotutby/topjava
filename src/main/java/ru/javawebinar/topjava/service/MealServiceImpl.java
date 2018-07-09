@@ -37,8 +37,13 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<Meal> getAll(int userId, LocalDate dateFrom, LocalDate dateTo) {
-        return repository.getAll(userId, dateFrom, dateTo);
+    public List<Meal> getAll(int userId) {
+        return repository.getAll(userId);
+    }
+
+    @Override
+    public List<Meal> getAllFiltered(int userId, LocalDate dateFrom, LocalDate dateTo) {
+        return repository.getAllFiltered(userId, dateFrom, dateTo);
     }
 
     @Override

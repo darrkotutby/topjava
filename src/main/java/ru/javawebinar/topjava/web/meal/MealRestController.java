@@ -20,19 +20,19 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 @Controller
 public class MealRestController {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MealService service;
 
     public List<MealWithExceed> getAll() {
         log.info("getAll");
-        return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId(), LocalDate.MIN, LocalDate.MAX), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public List<MealWithExceed> getAll(LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo) {
+    public List<MealWithExceed> getAllFiltered(LocalDate dateFrom, LocalDate dateTo, LocalTime timeFrom, LocalTime timeTo) {
         log.info("getAll");
-        return MealsUtil.getFilteredWithExceeded(service.getAll(SecurityUtil.authUserId(), dateFrom, dateTo), MealsUtil.DEFAULT_CALORIES_PER_DAY, timeFrom, timeTo);
+        return MealsUtil.getFilteredWithExceeded(service.getAllFiltered(SecurityUtil.authUserId(), dateFrom, dateTo), MealsUtil.DEFAULT_CALORIES_PER_DAY, timeFrom == null ? LocalTime.MIN : timeFrom, timeTo == null ? LocalTime.MAX : timeTo);
     }
 
 
@@ -44,6 +44,7 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
+        meal.setUserId(SecurityUtil.authUserId());
         return service.create(meal, SecurityUtil.authUserId());
     }
 
@@ -55,10 +56,9 @@ public class MealRestController {
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
+        meal.setUserId(SecurityUtil.authUserId());
         service.update(meal, SecurityUtil.authUserId());
     }
-
-
 }
 
 
