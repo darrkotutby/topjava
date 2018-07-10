@@ -9,12 +9,12 @@ import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
@@ -29,19 +29,17 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         log.info("save {} userId={}", meal, userId);
-        Map<Integer, Meal> map = repository.getOrDefault(userId, new ConcurrentHashMap<>());
+        Map<Integer, Meal> map = repository.computeIfAbsent(userId, (u) -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-        } else {
-            Meal testMeal = map.get(meal.getId());
-            if (testMeal == null || testMeal.getUserId() != userId) {
-                return null;
-            }
+            return map.computeIfAbsent(meal.getId(), (i) -> meal);
         }
-        map.put(meal.getId(), meal);
-        repository.put(userId, map);
-        return meal;
+        Meal testMeal = map.get(meal.getId());
+        if (testMeal == null || testMeal.getUserId() != userId) {
+            return null;
+        }
+        return map.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             return false;
         }
         Meal meal = map.get(id);
-        return meal != null && meal.getUserId() == userId && repository.remove(id) != null;
+        return meal != null && meal.getUserId() == userId && repository.get(userId).remove(id) != null;
     }
 
     @Override
@@ -72,20 +70,18 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public List<Meal> getAll(int userId) {
         log.info("getAll userId={}", userId);
-        return new ArrayList<>(repository.get(userId).values());
+        return getSorted(repository.get(userId).values().stream());
     }
 
     @Override
     public List<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
         log.info("getAll userId={} startDate={} endDate={}", userId, startDate, endDate);
 
-        LocalDate sd = startDate == null ? LocalDate.MIN : startDate;
-        LocalDate ed = endDate == null ? LocalDate.MAX : endDate;
-
-        return repository.get(userId).values().stream().filter(m -> m.getUserId() == userId && DateTimeUtil.isBetween(m.getDateTime().toLocalDate(), sd, ed))
-                .sorted((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime())).collect(Collectors.toList());
+        return getSorted(repository.get(userId).values().stream().filter(m -> DateTimeUtil.isBetween(m.getDateTime().toLocalDate(), startDate, endDate)));
     }
 
-
+    private List<Meal> getSorted(Stream<Meal> stream) {
+        return stream.sorted((m1, m2) -> m2.getDateTime().compareTo(m1.getDateTime())).collect(Collectors.toList());
+    }
 }
 

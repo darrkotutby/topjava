@@ -22,57 +22,46 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-
     private ConfigurableApplicationContext appCtx;
     private MealRestController controller;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-
         controller = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     public void destroy() {
-        // log.info("appCtx {}" , appCtx);
+        super.destroy();
         appCtx.close();
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-
         if (meal.isNew()) {
             controller.create(meal);
         } else {
             controller.update(meal, Integer.valueOf(id));
         }
-
         response.sendRedirect("meals");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         String df = request.getParameter("dateFrom");
         String dt = request.getParameter("dateTo");
         String tf = request.getParameter("timeFrom");
         String tt = request.getParameter("timeTo");
-
         String action = request.getParameter("action");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -91,12 +80,10 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-
                 LocalDate dateFrom = df == null || df.equals("") ? null : LocalDate.parse(df);
                 LocalDate dateTo = dt == null || dt.equals("") ? null : LocalDate.parse(dt);
                 LocalTime timeFrom = tf == null || tf.equals("") ? null : LocalTime.parse(tf);
                 LocalTime timeTo = tt == null || tt.equals("") ? null : LocalTime.parse(tt);
-
                 request.setAttribute("meals",
                         controller.getAllFiltered(dateFrom, dateTo, timeFrom, timeTo));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
