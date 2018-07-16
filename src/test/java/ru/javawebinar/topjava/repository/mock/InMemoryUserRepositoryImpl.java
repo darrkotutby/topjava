@@ -18,7 +18,6 @@ import static ru.javawebinar.topjava.UserTestData.USER;
 
 
 @Repository
-@Profile("test")
 public class InMemoryUserRepositoryImpl implements UserRepository {
 
     private Map<Integer, User> repository = new ConcurrentHashMap<>();

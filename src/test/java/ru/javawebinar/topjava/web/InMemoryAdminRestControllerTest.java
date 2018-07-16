@@ -24,7 +24,7 @@ public class InMemoryAdminRestControllerTest {
 
         System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "test");
 
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app-test.xml");
 
         System.out.println(Arrays.toString(appCtx.getBeanDefinitionNames()));
 

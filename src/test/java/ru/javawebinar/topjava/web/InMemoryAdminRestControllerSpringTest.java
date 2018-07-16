@@ -18,9 +18,8 @@ import java.util.Collection;
 
 import static ru.javawebinar.topjava.UserTestData.ADMIN;
 
-@ContextConfiguration("classpath:spring/spring-app.xml")
+@ContextConfiguration("classpath:spring/spring-app-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("test")
 public class InMemoryAdminRestControllerSpringTest {
 
     @Autowired
