@@ -28,6 +28,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -52,7 +53,7 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String msg = description.getDisplayName() + " " + Math.round(nanos/1000) + " mS" + "\n";
+            String msg = description.getDisplayName() + " " + TimeUnit.NANOSECONDS.toMillis(nanos) + " mS" + "\n";
             log.info(msg);
             watchedLog.append(msg);
         }
