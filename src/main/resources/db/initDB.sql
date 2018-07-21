@@ -25,13 +25,26 @@ CREATE TABLE user_roles
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE meals (
-  id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  user_id     INTEGER   NOT NULL,
-  date_time   TIMESTAMP NOT NULL,
-  description TEXT      NOT NULL,
-  calories    INT       NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-);
-CREATE UNIQUE INDEX meals_unique_user_datetime_idx
-  ON meals (user_id, date_time);
+create table meals
+(
+  id integer default nextval('global_seq'::regclass) not null,
+  user_id integer not null
+    constraint meals_user_id_fkey
+    references users
+    on delete cascade,
+  date_time timestamp not null,
+  description text not null,
+  calories integer not null,
+  constraint meals_pkey
+  primary key (id, user_id)
+)
+;
+
+create unique index meals_unique_user_datetime_idx
+  on meals (user_id, date_time)
+;
+
+create unique index meals_id_uk
+  on meals (id)
+;
+

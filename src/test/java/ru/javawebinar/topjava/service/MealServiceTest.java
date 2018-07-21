@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -108,7 +109,9 @@ public class MealServiceTest {
 
     @Test
     public void update() throws Exception {
-        Meal updated = getUpdated();
+        Meal updated = service.get(getUpdated().getId(), UserTestData.USER_ID);
+        updated.setDescription("Обновленный завтрак");
+        updated.setCalories(200);
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
