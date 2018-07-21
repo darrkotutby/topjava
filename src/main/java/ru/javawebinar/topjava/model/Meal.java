@@ -1,47 +1,19 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.io.Serializable;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@NamedQueries({
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id=:userId"),
-        @NamedQuery(name = Meal.BY_ID, query = "SELECT m FROM Meal m WHERE m.id=:id and m.user.id=:userId"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime desc"),
-        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId and m.dateTime BETWEEN :startDate AND :endDate ORDER BY m.dateTime desc"),
-        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m set m.dateTime = :dateTime, m.description=:description, m.calories = : calories WHERE m.id=:id and m.user.id=:userId"),
-})
-@Entity
-@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_idx")})
-public class Meal extends AbstractBaseEntity implements Serializable {
-
-    public static final String DELETE = "Meal.delete";
-    public static final String BY_ID = "Meal.get";
-    public static final String ALL_SORTED = "Meal.getAllSorted";
-    public static final String BETWEEN = "Meal.getBetween";
-    public static final String UPDATE = "Meal.update";
-
-    @Column(name = "date_time", nullable = false)
-    @NotNull
+public class Meal extends AbstractBaseEntity {
     private LocalDateTime dateTime;
 
-    @Column(name = "description", nullable = false)
-    @Size(min=2, max = 120)
-    @NotBlank
     private String description;
 
-    @Column(name = "calories", nullable = false)
-    @Min(10)
-    @Max(5000)
-    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
-    @NotNull
     private User user;
 
     public Meal() {
@@ -58,29 +30,16 @@ public class Meal extends AbstractBaseEntity implements Serializable {
         this.calories = calories;
     }
 
-
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public int getCalories() {
         return calories;
-    }
-
-    public void setCalories(int calories) {
-        this.calories = calories;
     }
 
     public LocalDate getDate() {
@@ -89,6 +48,18 @@ public class Meal extends AbstractBaseEntity implements Serializable {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 
     public User getUser() {
