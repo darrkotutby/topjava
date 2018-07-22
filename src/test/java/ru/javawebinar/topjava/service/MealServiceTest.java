@@ -118,9 +118,10 @@ public class MealServiceTest {
 
     @Test
     public void updateNotFound() throws Exception {
+        Meal updated = new Meal(MEAL1);
         thrown.expect(NotFoundException.class);
         thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
-        service.update(MEAL1, ADMIN_ID);
+        service.update(updated, ADMIN_ID);
     }
 
     @Test
