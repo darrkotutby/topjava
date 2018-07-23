@@ -27,24 +27,21 @@ CREATE TABLE user_roles
 
 create table meals
 (
-  id integer default nextval('global_seq'::regclass) not null,
+  id integer default nextval('global_seq'::regclass) not null
+    constraint meals_pkey
+    primary key,
+  date_time timestamp,
+  description varchar,
+  calories integer,
   user_id integer not null
     constraint meals_user_id_fkey
     references users
     on delete cascade,
-  date_time timestamp not null,
-  description text not null,
-  calories integer not null,
-  constraint meals_pkey
-  primary key (id, user_id)
+  constraint user_meals_idx
+  unique (user_id, date_time)
 )
 ;
 
-create unique index meals_unique_user_datetime_idx
-  on meals (user_id, date_time)
-;
 
-create unique index meals_id_uk
-  on meals (id)
-;
+
 

@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -43,7 +44,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(MealRestController.class);
+    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
     private static StringBuilder watchedLog = new StringBuilder("\n==================================================================================================\n");
 
     static {
@@ -54,9 +55,8 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String msg = description.getDisplayName() + " " + TimeUnit.NANOSECONDS.toMillis(nanos) + " mS" + "\n";
-            log.info(msg);
-            watchedLog.append(msg);
+            log.info("{} {} mS\n", description.getDisplayName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            watchedLog.append(description.getDisplayName()).append(" ").append(TimeUnit.NANOSECONDS.toMillis(nanos)).append(" mS").append("\n");
         }
 
     };
@@ -109,9 +109,7 @@ public class MealServiceTest {
 
     @Test
     public void update() throws Exception {
-        Meal updated = service.get(getUpdated().getId(), UserTestData.USER_ID);
-        updated.setDescription("Обновленный завтрак");
-        updated.setCalories(200);
+        Meal updated = MealTestData.getUpdated();
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }

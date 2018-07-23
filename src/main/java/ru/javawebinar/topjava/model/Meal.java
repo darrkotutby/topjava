@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.repository.jpa.MealPK;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -17,8 +15,7 @@ import java.time.LocalTime;
         @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m set m.dateTime = :dateTime, m.description=:description, m.calories = : calories WHERE m.id=:id and m.user.id=:userId"),
 })
 @Entity
-@IdClass(MealPK.class)
-@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"id"}, name = "meals_id_uk"), @UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_idx")})
+@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_idx")})
 public class Meal extends AbstractBaseEntity implements Serializable {
 
     public static final String DELETE = "Meal.delete";
@@ -39,13 +36,11 @@ public class Meal extends AbstractBaseEntity implements Serializable {
     @Column(name = "calories", nullable = false)
     @Min(10)
     @Max(5000)
-    @NotNull
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id",  nullable = false)
     @NotNull
-    @Id
     private User user;
 
     public Meal() {
