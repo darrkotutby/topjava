@@ -5,12 +5,18 @@ public class Profiles {
             JDBC = "jdbc",
             JPA = "jpa",
             DATAJPA = "datajpa";
-
-    public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
-
     public static final String
             POSTGRES_DB = "postgres",
             HSQL_DB = "hsqldb";
+    public static String repositoryImplementation = DATAJPA;
+
+    public static String getRepositoryImplementation() {
+        return repositoryImplementation;
+    }
+
+    public static void setRepositoryImplementation(String repositoryImplementation) {
+        Profiles.repositoryImplementation = repositoryImplementation;
+    }
 
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
