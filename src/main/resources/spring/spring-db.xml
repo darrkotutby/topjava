@@ -57,6 +57,17 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
 
+
+        <beans profile="postgres">
+            <bean id="converter" class="ru.javawebinar.topjava.repository.jdbc.converter.PostgresConverter"/>
+        </beans>
+
+        <beans profile="hsqldb">
+            <bean id="converter" class="ru.javawebinar.topjava.repository.jdbc.converter.HsqldbConverter"/>
+        </beans>
+
+
+
     </beans>
 
     <beans profile="jpa">
