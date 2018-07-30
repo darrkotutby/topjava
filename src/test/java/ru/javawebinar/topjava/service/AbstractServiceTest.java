@@ -30,7 +30,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public abstract class AbstractServiceTest {
     private static final Logger log = getLogger("result");
 
-    private static StringBuilder results;
+    private static StringBuilder results = new StringBuilder();
 
     static {
         // needed only for java.util.logging (postgres driver)
@@ -53,7 +53,7 @@ public abstract class AbstractServiceTest {
 
     @BeforeClass
     public static void init() {
-        results = new StringBuilder();
+        results.delete(0, results.length());
     }
 
     @AfterClass
