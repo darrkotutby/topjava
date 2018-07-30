@@ -14,11 +14,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Modifying
-    @Transactional(propagation=Propagation.REQUIRED)
+    @Transactional
     int deleteByIdAndUser_Id(Integer id, Integer user_id);
 
     @Override
-    @Transactional(propagation=Propagation.REQUIRED)
     Meal save(Meal meal);
 
     Optional<Meal> findByIdAndUserId(Integer id, Integer user_id);
