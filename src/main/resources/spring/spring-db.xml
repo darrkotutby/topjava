@@ -20,7 +20,7 @@
     </jdbc:initialize-database>
 
 
-    <tx:annotation-driven/>
+
 
 
     <beans profile="hsqldb">
@@ -59,32 +59,26 @@
 
 
         <beans profile="postgres">
-            <bean id="converter" class="ru.javawebinar.topjava.repository.jdbc.converter.PostgresConverter"/>
+            <bean id="mealRepository" class="ru.javawebinar.topjava.repository.jdbc.PostgresJdbcMealRepositoryImpl">
+                <constructor-arg index="0" ref="jdbcTemplate"/>
+                <constructor-arg index="1" ref="namedJdbcTemplate"/>
+            </bean>
         </beans>
 
         <beans profile="hsqldb">
-            <bean id="converter" class="ru.javawebinar.topjava.repository.jdbc.converter.HsqldbConverter"/>
+            <bean id="mealRepository" class="ru.javawebinar.topjava.repository.jdbc.HsqldbJdbcMealRepositoryImpl">
+                <constructor-arg index="0" ref="jdbcTemplate"/>
+                <constructor-arg index="1" ref="namedJdbcTemplate"/>
+            </bean>
         </beans>
 
-
-
-    </beans>
-
-    <beans profile="jpa">
-        <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
-        <jpa:repositories base-package="ru.javawebinar.**.repository.jpa"/>
-
-
-    </beans>
-    <beans profile="datajpa">
-
-        <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
-        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
 
 
     </beans>
 
     <beans profile="jpa,datajpa">
+
+        <tx:annotation-driven/>
 
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
@@ -114,6 +108,22 @@
 
 
     </beans>
+
+    <beans profile="jpa">
+        <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
+        <jpa:repositories base-package="ru.javawebinar.**.repository.jpa"/>
+
+
+    </beans>
+    <beans profile="datajpa">
+
+        <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
+        <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
+
+
+    </beans>
+
+
 
 
 </beans>

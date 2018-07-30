@@ -4,7 +4,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
 
 
-@ActiveProfiles(profiles = {"jpa", "postgres"})
+@ActiveProfiles(profiles = {"jpa"})
 public class JpaUserServiceTest extends AbstractUserServiceTest {
 
 

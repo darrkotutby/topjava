@@ -2,6 +2,7 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.AbstractEnvironment;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
@@ -20,21 +21,25 @@ import static java.time.LocalDateTime.of;
 
 public class SpringMain {
     public static void main(String[] args) {
-        // java 7 Automatic resource management
-        System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, "jdbc,postgres");
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/mock.xml")) {
+        try (GenericXmlApplicationContext appCtx = new GenericXmlApplicationContext()) {
+
+            appCtx.getEnvironment().addActiveProfile(Profiles.getActiveDbProfile());
+            appCtx.getEnvironment().addActiveProfile(Profiles.REPOSITORY_IMPLEMENTATION);
+            appCtx.load("classpath:spring/spring-app.xml","classpath:spring/spring-db.xml" );
+            appCtx.refresh();
+
             System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-            adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN));
+            adminUserController.create(new User(null, "userName1", "email1@mail.ru", "password1", Role.ROLE_ADMIN));
             System.out.println(adminUserController.getAll());
 
             MealRestController mealController = appCtx.getBean(MealRestController.class);
-            mealController.create(new Meal(null, of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+            mealController.create(new Meal(null, of(2018, Month.MAY, 30, 10, 0), "Завтрак", 500));
             System.out.println(mealController.getAll());
             List<MealWithExceed> filteredMealsWithExceeded =
                     mealController.getBetween(
-                            LocalDate.of(2015, Month.MAY, 30), LocalTime.of(7, 0),
-                            LocalDate.of(2015, Month.MAY, 31), LocalTime.of(11, 0));
+                            LocalDate.of(2018, Month.MAY, 30), LocalTime.of(7, 0),
+                            LocalDate.of(2018, Month.MAY, 31), LocalTime.of(11, 0));
             filteredMealsWithExceeded.forEach(System.out::println);
         }
     }

@@ -4,7 +4,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.service.AbstractMealServiceTest;
 
 
-@ActiveProfiles(profiles = {"jdbc", "postgres"})
+@ActiveProfiles(profiles = {"jdbc"})
 public class JdbcMealServiceTest extends AbstractMealServiceTest {
 
 
