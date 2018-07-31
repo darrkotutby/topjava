@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.javawebinar.topjava.MealTestData;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -15,7 +17,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void delete() throws Exception {
@@ -75,5 +77,11 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
                 LocalDate.of(2015, Month.MAY, 30), USER_ID), MEAL3, MEAL2, MEAL1);
     }
 
+
+    @Test
+    public void getWithUser() throws Exception {
+        thrown.expect(UnsupportedOperationException.class);
+        service.getWithUser(MealTestData.MEAL1_ID, UserTestData.USER_ID);
+    }
 
 }

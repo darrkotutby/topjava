@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public class DataJpaMealRepositoryImpl implements MealRepository, DataJpaMealRepository {
+public class DataJpaMealRepositoryImpl implements MealRepository {
     private static final Sort SORT_DATE_TIME_DESC = new Sort(Sort.Direction.DESC, "dateTime");
 
     @Autowired
@@ -32,7 +32,7 @@ public class DataJpaMealRepositoryImpl implements MealRepository, DataJpaMealRep
 
     @Override
     public boolean delete(int id, int userId) {
-        return crudMealRepository.deleteByIdAndUser_Id(id, userId) != 0;
+        return crudMealRepository.deleteByIdAndUserId(id, userId) != 0;
     }
 
     @Override

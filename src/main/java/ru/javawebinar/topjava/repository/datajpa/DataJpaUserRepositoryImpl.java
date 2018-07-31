@@ -13,7 +13,7 @@ import java.util.List;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Repository
-public class DataJpaUserRepositoryImpl implements UserRepository, DataJpaUserRepository {
+public class DataJpaUserRepositoryImpl implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = new Sort(Sort.Direction.ASC, "name", "email");
     private static final Logger log = getLogger("result");
 

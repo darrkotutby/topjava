@@ -11,21 +11,13 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <!--<context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>-->
-
-
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
         <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
         <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
     </jdbc:initialize-database>
 
-
-
-
-
     <beans profile="hsqldb">
         <context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>
-
         <!--no pooling-->
         <bean id="dataSource"
               class="org.springframework.jdbc.datasource.DriverManagerDataSource"
@@ -37,7 +29,6 @@
 
     <beans profile="postgres">
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
-
         <bean id="dataSource"
               class="org.apache.tomcat.jdbc.pool.DataSource"
               p:driverClassName="org.postgresql.Driver"
@@ -47,44 +38,21 @@
     </beans>
 
     <beans profile="jdbc">
-
         <context:component-scan base-package="ru.javawebinar.**.repository.jdbc"/>
         <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
             <constructor-arg ref="dataSource"/>
         </bean>
-
         <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
-
-
-        <beans profile="postgres">
-            <bean id="mealRepository" class="ru.javawebinar.topjava.repository.jdbc.PostgresJdbcMealRepositoryImpl">
-                <constructor-arg index="0" ref="jdbcTemplate"/>
-                <constructor-arg index="1" ref="namedJdbcTemplate"/>
-            </bean>
-        </beans>
-
-        <beans profile="hsqldb">
-            <bean id="mealRepository" class="ru.javawebinar.topjava.repository.jdbc.HsqldbJdbcMealRepositoryImpl">
-                <constructor-arg index="0" ref="jdbcTemplate"/>
-                <constructor-arg index="1" ref="namedJdbcTemplate"/>
-            </bean>
-        </beans>
-
-
-
     </beans>
 
     <beans profile="jpa,datajpa">
-
         <tx:annotation-driven/>
-
         <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
               p:dataSource-ref="dataSource"
               p:packagesToScan="ru.javawebinar.**.model">
             <!--p:persistenceUnitName="persistenceUnit">-->
-
             <property name="jpaPropertyMap">
                 <map>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
@@ -105,25 +73,14 @@
         <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
         <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
               p:entityManagerFactory-ref="entityManagerFactory"/>
-
-
     </beans>
 
     <beans profile="jpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
         <jpa:repositories base-package="ru.javawebinar.**.repository.jpa"/>
-
-
     </beans>
     <beans profile="datajpa">
-
         <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
         <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
-
-
     </beans>
-
-
-
-
 </beans>

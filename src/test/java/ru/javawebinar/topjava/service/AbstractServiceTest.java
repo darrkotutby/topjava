@@ -53,7 +53,7 @@ public abstract class AbstractServiceTest {
 
     @BeforeClass
     public static void init() {
-        results.delete(0, results.length());
+        results.setLength(0);
     }
 
     @AfterClass
