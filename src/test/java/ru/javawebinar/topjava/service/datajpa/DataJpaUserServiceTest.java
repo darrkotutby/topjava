@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.MealTestData;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 
-@ActiveProfiles(profiles = {"datajpa"})
+@ActiveProfiles(profiles = Profiles.DATAJPA)
 public class DataJpaUserServiceTest extends AbstractUserServiceTest {
 
     @Test

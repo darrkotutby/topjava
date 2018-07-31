@@ -18,17 +18,19 @@ import java.util.List;
 @Repository
 public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
 
-
-
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    private final JdbcTemplate jdbcTemplate;
-
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private final SimpleJdbcInsert insertMeal;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private SimpleJdbcInsert insertMeal;
+
+    public AbstractJdbcMealRepository() {
+    }
+
     public AbstractJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
@@ -37,9 +39,6 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
-
-
-
 
     @Override
     public boolean delete(int id, int userId) {
@@ -61,6 +60,11 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
+
+        insertMeal = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("meals")
+                .usingGeneratedKeyColumns("id");;
+
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
@@ -91,5 +95,4 @@ public abstract class AbstractJdbcMealRepository<T> implements MealRepository {
     }
 
     abstract T convert(LocalDateTime localDateTime);
-
 }
