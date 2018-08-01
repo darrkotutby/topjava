@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
@@ -90,6 +89,11 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test(expected = UnsupportedOperationException.class)
     public void getWithMeals() throws Exception {
         service.getWithMeals(UserTestData.ADMIN_ID);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void getWithMealsNotFound() throws Exception {
+        service.getWithMeals(UserTestData.ADMIN_ID + 100);
     }
 
 }

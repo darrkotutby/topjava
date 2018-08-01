@@ -2,14 +2,13 @@ package ru.javawebinar.topjava.service.datajpa;
 
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractUserServiceTest;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import javax.xml.ws.Service;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -19,7 +18,7 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
 
     @Test
     public void getWithMeals() {
-        User expectedUser =  new User(UserTestData.ADMIN);
+        User expectedUser = new User(UserTestData.ADMIN);
         User actualUser = service.getWithMeals(UserTestData.ADMIN_ID);
         UserTestData.assertMatch(actualUser, expectedUser);
         MealTestData.assertMatch(actualUser.getMeals(), Arrays.asList(MealTestData.ADMIN_MEAL1, MealTestData.ADMIN_MEAL2));
@@ -34,6 +33,11 @@ public class DataJpaUserServiceTest extends AbstractUserServiceTest {
         User actualUser = service.getWithMeals(expectedUser.getId());
         UserTestData.assertMatch(actualUser, expectedUser);
         MealTestData.assertMatch(actualUser.getMeals(), Collections.emptyList());
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getWithMealsNotFound() throws Exception {
+        service.getWithMeals(UserTestData.ADMIN_ID + 100);
     }
 
 }

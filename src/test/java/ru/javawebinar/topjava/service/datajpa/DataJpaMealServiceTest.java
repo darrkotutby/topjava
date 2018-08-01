@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.AbstractMealServiceTest;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -19,8 +20,14 @@ public class DataJpaMealServiceTest extends AbstractMealServiceTest {
         Meal expectedMeal = clone(MealTestData.MEAL1, UserTestData.USER);
         Meal meal = service.getWithUser(MealTestData.MEAL1_ID, UserTestData.USER_ID);
         assertThat(meal).isEqualToComparingFieldByField(expectedMeal);
-
     }
+
+    @Test
+    public void getWithUserNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        Meal meal = service.getWithUser(MealTestData.MEAL1_ID, UserTestData.USER_ID + 100);
+    }
+
 
     private Meal clone(Meal meal, User user) {
         Meal clonedMeal = new Meal(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories());

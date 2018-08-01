@@ -84,4 +84,10 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         service.getWithUser(MealTestData.MEAL1_ID, UserTestData.USER_ID);
     }
 
+    @Test
+    public void getWithUserNotFound() throws Exception {
+        thrown.expect(UnsupportedOperationException.class);
+        service.getWithUser(MealTestData.MEAL1_ID, UserTestData.USER_ID + 100);
+    }
+
 }
