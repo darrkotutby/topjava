@@ -128,6 +128,7 @@ public class User extends AbstractNamedEntity {
         return roles;
     }
 
+
     public String getPassword() {
         return password;
     }
