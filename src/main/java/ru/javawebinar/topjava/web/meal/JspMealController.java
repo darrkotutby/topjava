@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.javawebinar.topjava.model.Meal;
 
@@ -26,14 +25,16 @@ public class JspMealController extends MealController {
         return "meals";
     }
 
-    @GetMapping("/meals/{id}/update")
-    public String update(@PathVariable Integer id, Model model) {
+    @GetMapping("/meals/update")
+    public String update(HttpServletRequest request, Model model) {
+        Integer id = Integer.valueOf(request.getParameter("id"));
         model.addAttribute("meal", super.get(id));
         return "mealForm";
     }
 
-    @GetMapping("/meals/{id}/delete")
-    public String delete(@PathVariable Integer id, Model model) {
+    @GetMapping("/meals/delete")
+    public String delete(HttpServletRequest request, Model model) {
+        Integer id = Integer.valueOf(request.getParameter("id"));
         super.delete(id);
         return "redirect:/meals";
     }
