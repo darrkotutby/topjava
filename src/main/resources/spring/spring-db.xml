@@ -63,6 +63,8 @@
             <property name="dataSource" ref="dataSource"/>
         </bean>
 
+        <tx:annotation-driven proxy-target-class="true"/>
+
     </beans>
 
     <beans profile="jpa,datajpa">

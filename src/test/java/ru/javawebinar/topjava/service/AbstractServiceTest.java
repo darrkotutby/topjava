@@ -19,6 +19,8 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
 
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
@@ -58,14 +60,7 @@ abstract public class AbstractServiceTest {
         }
     }
 
-    boolean isNotJdbc() {
-        boolean isNotJdbc = true;
-
-        for (String profile : environment.getActiveProfiles()) {
-            if (profile.equalsIgnoreCase(Profiles.JDBC)) {
-                isNotJdbc = false;
-            }
-        }
-        return isNotJdbc;
+    boolean isJpa() {
+        return Arrays.stream(environment.getActiveProfiles()).noneMatch(profile -> profile.equalsIgnoreCase(Profiles.JDBC));
     }
 }
