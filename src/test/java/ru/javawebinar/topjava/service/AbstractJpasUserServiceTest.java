@@ -8,6 +8,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.ConstraintViolationException;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public abstract class AbstractUserServiceTest extends AbstractServiceTest {
+public abstract class AbstractJpasUserServiceTest extends AbstractUserServiceTest {
 
     @Autowired
     protected UserService service;
@@ -25,9 +26,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private JpaUtil jpaUtil;
+
     @Before
     public void setUp() throws Exception {
-        cacheManager.getCache("users").clear();
+        super.setUp();
+        if (jpaUtil != null) {
+            jpaUtil.clear2ndLevelHibernateCache();
+        }
     }
 
     @Test
@@ -35,8 +42,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
         newUser.setId(created.getId());
-        List<User> list = service.getAll();
-        assertMatch(list, ADMIN, newUser, USER);
+        assertMatch(service.getAll(), ADMIN, newUser, USER);
     }
 
     @Test(expected = DataAccessException.class)
@@ -57,8 +63,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void get() throws Exception {
-        User user = service.get(ADMIN_ID);
-        assertMatch(user, ADMIN);
+        User user = service.get(USER_ID);
+        assertMatch(user, USER);
     }
 
     @Test(expected = NotFoundException.class)
@@ -68,8 +74,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void getByEmail() throws Exception {
-        User user = service.getByEmail("admin@gmail.com");
-        assertMatch(user, ADMIN);
+        User user = service.getByEmail("user@yandex.ru");
+        assertMatch(user, USER);
     }
 
     @Test

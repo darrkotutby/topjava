@@ -52,8 +52,10 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="<%=request.getContextPath()%>/meals/${meal.id}/update"><spring:message code="meal.update"/></a></td>
-                <td><a href="<%=request.getContextPath()%>/meals/${meal.id}/delete"><spring:message code="meal.delete"/></a></td>
+                <td><a href="<%=request.getContextPath()%>/meals/update?id=${meal.id}"><spring:message
+                        code="meal.update"/></a></td>
+                <td><a href="<%=request.getContextPath()%>/meals/delete?id=${meal.id}"><spring:message
+                        code="meal.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>
