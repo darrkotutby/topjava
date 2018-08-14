@@ -21,12 +21,6 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 public class JspMealController extends MealController {
 
 
-    @GetMapping()
-    public String meals(Model model) {
-        model.addAttribute("meals", super.getAll());
-        return "meals";
-    }
-
     @GetMapping("/update")
     public String update(HttpServletRequest request, Model model) {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -35,7 +29,7 @@ public class JspMealController extends MealController {
     }
 
     @GetMapping("/delete")
-    public String delete(HttpServletRequest request, Model model) {
+    public String delete(HttpServletRequest request) {
         int id = Integer.parseInt(request.getParameter("id"));
         super.delete(id);
         return "redirect:/meals";
