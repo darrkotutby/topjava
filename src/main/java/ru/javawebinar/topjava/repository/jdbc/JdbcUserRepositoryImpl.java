@@ -85,7 +85,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     @Override
     public User get(int id) {
         return DataAccessUtils.singleResult(
-                jdbcTemplate.query("SELECT * FROM users a, user_roles b WHERE a.id=b.user_id and id=?",
+                jdbcTemplate.query("SELECT * FROM users a LEFT JOIN user_roles b ON a.id=b.user_id WHERE a.id=?",
                         new UserResultSetExtractor(), id));
     }
 
@@ -93,13 +93,13 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     public User getByEmail(String email) {
 
         return DataAccessUtils.singleResult(
-                jdbcTemplate.query("SELECT * FROM users a, user_roles b WHERE a.id=b.user_id and a.email=?",
+                jdbcTemplate.query("SELECT * FROM users a LEFT JOIN user_roles b ON a.id=b.user_id WHERE a.email=?",
                         new UserResultSetExtractor(), email));
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users a, user_roles b WHERE a.id=b.user_id ORDER BY name, email",
+        return jdbcTemplate.query("SELECT * FROM users a LEFT JOIN user_roles b ON a.id=b.user_id ORDER BY name, email",
                 new UserResultSetExtractor());
     }
 }

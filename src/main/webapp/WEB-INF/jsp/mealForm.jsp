@@ -7,15 +7,7 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h2>
-        <c:choose>
-            <c:when test="${action eq 'create'}">
-                <spring:message code="meal.create" var="label"/>
-            </c:when>
-            <c:otherwise>
-                <spring:message code="meal.updateLabel" var="label"/>
-            </c:otherwise>
-        </c:choose>
-        <c:out value="${label}"/>
+        <spring:message code="${action == 'create' ? 'meal.create' : 'meal.updateLabel'}"/>
     </h2>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
