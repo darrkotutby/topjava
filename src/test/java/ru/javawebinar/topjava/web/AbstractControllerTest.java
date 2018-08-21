@@ -48,10 +48,6 @@ abstract public class AbstractControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    public MealService getMealService() {
-        return mealService;
-    }
-
     @PostConstruct
     private void postConstruct() {
         mockMvc = MockMvcBuilders

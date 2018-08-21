@@ -28,10 +28,10 @@
         <property name="formatters">
             <set>
                 <bean class="org.springframework.format.number.NumberFormatAnnotationFormatterFactory"/>
-                <bean class="ru.javawebinar.topjava.web.meal.LocalDateFormatter">
+                <bean class="ru.javawebinar.topjava.util.LocalDateFormatter">
                     <constructor-arg type="java.lang.String" value="yyyy-MM-dd"/>
                 </bean>
-                <bean class="ru.javawebinar.topjava.web.meal.LocalTimeFormatter">
+                <bean class="ru.javawebinar.topjava.util.LocalTimeFormatter">
                     <constructor-arg type="java.lang.String" value="HH:mm:ss"/>
                 </bean>
             </set>

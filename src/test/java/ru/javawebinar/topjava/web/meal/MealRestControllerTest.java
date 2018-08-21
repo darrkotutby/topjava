@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
@@ -70,13 +71,25 @@ class MealRestControllerTest extends AbstractControllerTest {
         MealTestData.assertMatch(mealService.getAll(UserTestData.USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }
 
+    @Test
+    void testGetAll() throws Exception {
+        mockMvc.perform(get(REST_URL))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL6, true),
+                        MealsUtil.createWithExceed(MEAL5, true),
+                        MealsUtil.createWithExceed(MEAL4, true),
+                        MealsUtil.createWithExceed(MEAL3, false),
+                        MealsUtil.createWithExceed(MEAL2, false),
+                        MealsUtil.createWithExceed(MEAL1, false)));
+    }
 
     @Test
     void testGetFiltered() throws Exception {
         mockMvc.perform(get(REST_URL + "filter?start=2015-05-30T09:00:30&end=2015-05-30T14:15:30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL2, MEAL1));
+                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
     }
 
     @Test
@@ -84,7 +97,6 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(REST_URL + "filterSep?endDate=2015-05-30&startTime=09:00:30&endTime=14:15:30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL2, MEAL1));
+                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
     }
-
 }
