@@ -39,13 +39,18 @@ abstract public class AbstractControllerTest {
     @Autowired
     protected UserService userService;
     @Autowired
-    protected MealService mealService;
+    protected
+    MealService mealService;
     @Autowired
     private CacheManager cacheManager;
     @Autowired(required = false)
     private JpaUtil jpaUtil;
     @Autowired
     private WebApplicationContext webApplicationContext;
+
+    public MealService getMealService() {
+        return mealService;
+    }
 
     @PostConstruct
     private void postConstruct() {
