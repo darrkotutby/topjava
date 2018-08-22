@@ -1,12 +1,14 @@
 package ru.javawebinar.topjava.web.meal;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -24,6 +26,9 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = MealRestController.REST_URL + '/';
 
+    @Autowired
+    protected MealService mealService;
+
     @Test
     void testGet() throws Exception {
         mockMvc.perform(get(REST_URL + MEAL1_ID))
@@ -31,7 +36,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 // https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL1));
+                .andExpect(TestUtil.contentJson(MEAL1));
     }
 
     @Test
@@ -76,7 +81,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL6, true),
+                .andExpect(TestUtil.contentJson(MealsUtil.createWithExceed(MEAL6, true),
                         MealsUtil.createWithExceed(MEAL5, true),
                         MealsUtil.createWithExceed(MEAL4, true),
                         MealsUtil.createWithExceed(MEAL3, false),
@@ -89,7 +94,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(REST_URL + "filter?start=2015-05-30T09:00:30&end=2015-05-30T14:15:30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
+                .andExpect(TestUtil.contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
     }
 
     @Test
@@ -97,6 +102,6 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(REST_URL + "filterSep?endDate=2015-05-30&startTime=09:00:30&endTime=14:15:30"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
+                .andExpect(TestUtil.contentJson(MealsUtil.createWithExceed(MEAL2, false), MealsUtil.createWithExceed(MEAL1, false)));
     }
 }
