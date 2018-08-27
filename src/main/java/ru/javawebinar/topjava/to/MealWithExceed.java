@@ -56,7 +56,17 @@ public class MealWithExceed {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, dateTime, description, calories, exceed);
+    }
+
+    @Override
+    public String toString() {
+        return "MealWithExceed{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description + '\'' +
+                ", calories=" + calories +
+                ", exceed=" + exceed +
+                '}';
     }
 }
