@@ -35,12 +35,16 @@ abstract public class AbstractControllerTest {
     }
 
     protected MockMvc mockMvc;
-    @Autowired
-    protected UserService userService;
+
     @Autowired
     private CacheManager cacheManager;
+
     @Autowired(required = false)
     private JpaUtil jpaUtil;
+
+    @Autowired
+    protected UserService userService;
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
