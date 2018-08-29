@@ -35,18 +35,15 @@ $(function () {
     makeEditable();
 });
 
-function updateTableFiltered() {
-    var form = $("#mealsFilterForm");
+function updateTable() {
+    const form = $("#mealsFilterForm");
     $.ajax({
         type: "GET",
         url: ajaxUrl + "filter",
         data: form.serialize(),
         success: function (data) {
-            s(data);
-        }} );
+            draw(data);
+        }
+    });
 }
 
-function f() {
-    updateTableFiltered(document.getElementById("startDate").value, document.getElementById("endDate").value,
-        document.getElementById("startTime").value, document.getElementById("endTime").value);
-}

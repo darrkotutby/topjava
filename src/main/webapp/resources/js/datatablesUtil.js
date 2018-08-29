@@ -27,13 +27,6 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        s(data);
-    });
-}
-
-
 function save() {
     var form = $("#detailsForm");
     $.ajax({
@@ -42,17 +35,13 @@ function save() {
         data: form.serialize(),
         success: function () {
             $("#editRow").modal("hide");
-            f();
+            updateTable();
             successNoty("Saved");
         }
     });
 }
 
-function f() {
-    updateTable();
-}
-
-function s(data) {
+function draw(data) {
     datatableApi.clear().rows.add(data).draw();
 }
 

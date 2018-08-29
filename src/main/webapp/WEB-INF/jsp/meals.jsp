@@ -17,10 +17,7 @@
     }
 
     function doFilter() {
-        updateTableFiltered(document.getElementById("startDate").value,
-            document.getElementById("endDate").value,
-            document.getElementById("startTime").value,
-            document.getElementById("endTime").value);
+        updateTable();
     }
 
 </script>

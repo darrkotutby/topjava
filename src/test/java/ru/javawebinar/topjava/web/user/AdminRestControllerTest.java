@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.TestUtil;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
@@ -56,6 +57,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
                 .andExpect(status().isOk());
 
         assertMatch(userService.get(USER_ID), updated);
@@ -82,5 +84,17 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentJson(ADMIN, USER)));
+    }
+
+    @Test
+    void testSetEnabled() throws Exception {
+        User user = new User(UserTestData.USER);
+        user.setEnabled(false);
+        mockMvc.perform(post(REST_URL + USER_ID + "/setEnabled")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"enabled\"=false"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+        assertMatch(userService.get(UserTestData.USER_ID), user);
     }
 }
