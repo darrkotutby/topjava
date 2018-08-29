@@ -92,9 +92,9 @@ class AdminRestControllerTest extends AbstractControllerTest {
         user.setEnabled(false);
         mockMvc.perform(post(REST_URL + USER_ID + "/setEnabled")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"enabled\"=false"))
+                .param("enabled", "false"))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
         assertMatch(userService.get(UserTestData.USER_ID), user);
     }
 }
