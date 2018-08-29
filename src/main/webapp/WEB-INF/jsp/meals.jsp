@@ -13,7 +13,7 @@
         document.getElementById("endDate").value = "";
         document.getElementById("startTime").value = "";
         document.getElementById("endTime").value = "";
-        //doFilter();
+        doFilter();
     }
 
     function doFilter() {

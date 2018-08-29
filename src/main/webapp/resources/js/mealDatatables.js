@@ -35,7 +35,7 @@ $(function () {
     makeEditable();
 });
 
-function updateTableFiltered(startDate, endDate, startTime, endTime) {
+function updateTableFiltered() {
     var form = $("#mealsFilterForm");
     $.ajax({
         type: "GET",
