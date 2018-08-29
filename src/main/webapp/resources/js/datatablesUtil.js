@@ -29,9 +29,10 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(ajaxUrl, function (data) {
-        datatableApi.clear().rows.add(data).draw();
+        s(data);
     });
 }
+
 
 function save() {
     var form = $("#detailsForm");
@@ -41,10 +42,18 @@ function save() {
         data: form.serialize(),
         success: function () {
             $("#editRow").modal("hide");
-            updateTable();
+            f();
             successNoty("Saved");
         }
     });
+}
+
+function f() {
+    updateTable();
+}
+
+function s(data) {
+    datatableApi.clear().rows.add(data).draw();
 }
 
 var failedNote;

@@ -25,7 +25,6 @@ $(function () {
                 "orderable": false
             }
         ],
-        // TODO check datetime sorting
         "order": [
             [
                 0,
@@ -35,3 +34,19 @@ $(function () {
     });
     makeEditable();
 });
+
+function updateTableFiltered(startDate, endDate, startTime, endTime) {
+    var form = $("#mealsFilterForm");
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + "filter",
+        data: form.serialize(),
+        success: function (data) {
+            s(data);
+        }} );
+}
+
+function f() {
+    updateTableFiltered(document.getElementById("startDate").value, document.getElementById("endDate").value,
+        document.getElementById("startTime").value, document.getElementById("endTime").value);
+}

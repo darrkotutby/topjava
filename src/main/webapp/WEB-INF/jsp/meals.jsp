@@ -7,30 +7,58 @@
 <body>
 <script type="text/javascript" src="resources/js/datatablesUtil.js" defer></script>
 <script type="text/javascript" src="resources/js/mealDatatables.js" defer></script>
+<script type="text/javascript" defer>
+    function doClear() {
+        document.getElementById("startDate").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("startTime").value = "";
+        document.getElementById("endTime").value = "";
+        //doFilter();
+    }
+
+    function doFilter() {
+        updateTableFiltered(document.getElementById("startDate").value,
+            document.getElementById("endDate").value,
+            document.getElementById("startTime").value,
+            document.getElementById("endTime").value);
+    }
+
+</script>
+
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
     <div class="container">
         <h3><spring:message code="meal.title"/></h3>
 
-        <form method="post" action="meals/filter">
+        <form method="post" action="ajax/meals/filter" id="mealsFilterForm">
             <dl>
                 <dt><spring:message code="meal.startDate"/>:</dt>
-                <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+                <dd><input type="date" name="startDate" value="${param.startDate}" id="startDate"></dd>
             </dl>
             <dl>
                 <dt><spring:message code="meal.endDate"/>:</dt>
-                <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+                <dd><input type="date" name="endDate" value="${param.endDate}" id="endDate"></dd>
             </dl>
             <dl>
                 <dt><spring:message code="meal.startTime"/>:</dt>
-                <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+                <dd><input type="time" name="startTime" value="${param.startTime}" id="startTime"></dd>
             </dl>
             <dl>
                 <dt><spring:message code="meal.endTime"/>:</dt>
-                <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+                <dd><input type="time" name="endTime" value="${param.endTime}" id="endTime"></dd>
             </dl>
-            <button type="submit"><spring:message code="meal.filter"/></button>
+            <button type="button" class="btn btn-secondary" onclick="doClear()">
+                <span class="fa fa-close"></span>
+                <spring:message code="common.clear"/>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="doFilter()">
+                <span class="fa fa-check"></span>
+                <spring:message code="meal.filter"/>
+            </button>
+
+
+            <%--<button type="submit"><spring:message code="meal.filter"/></button>--%>
         </form>
         <hr>
         <button class="btn btn-primary" onclick="add()">
@@ -59,7 +87,7 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete" ><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
@@ -84,7 +112,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-form-label"><spring:message code="meal.description"/></label>
+                        <label for="description" class="col-form-label"><spring:message
+                                code="meal.description"/></label>
                         <input type="text" class="form-control" id="description" name="description"
                                placeholder="<spring:message code="meal.description"/>">
                     </div>

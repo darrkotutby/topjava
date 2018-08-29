@@ -39,4 +39,29 @@ $(function () {
         ]
     });
     makeEditable();
+
+    $(document).ready(function () {
+        $(".chbck").on('click', function () {
+            var element = $(this);
+            var tr = element.closest("tr");
+            var userId = $(this).parents("tr").attr("id");
+            var checked = $(this).is(':checked');
+
+            $.ajax({
+                type: "POST",
+                url: ajaxUrl + userId + "/setEnabled",
+                data: "enabled=" + checked,
+                success: function () {
+                    if (checked) {
+                        tr.css('color', 'black');
+                    }
+                    else {
+                        tr.css('color', 'lightgray');
+                    }
+                    successNoty("Enable changed");
+                }
+            });
+        });
+    });
 });
+

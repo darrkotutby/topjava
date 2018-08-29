@@ -5,7 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -35,4 +38,14 @@ public class MealAjaxController extends AbstractMealController {
             super.create(meal);
         }
     }
+
+    @GetMapping("/filter")
+    public List<MealWithExceed> filter(@RequestParam(value="startDate", required = false) LocalDate startDate,
+                               @RequestParam(value="endDate", required = false) LocalDate endDate,
+                               @RequestParam(value="startTime", required = false) LocalTime startTime,
+                               @RequestParam(value="endTime", required = false) LocalTime endTime,
+                                       HttpServletRequest request) {
+        return super.getBetween(startDate, startTime, endDate, endTime);
+    }
+
 }

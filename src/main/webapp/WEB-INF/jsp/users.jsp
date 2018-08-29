@@ -32,20 +32,23 @@
             </thead>
             <c:forEach items="${users}" var="user">
                 <jsp:useBean id="user" type="ru.javawebinar.topjava.model.User"/>
-                <tr id="${user.id}">
+                <tr id="${user.id}" data-enabledUser="${user.enabled}">
                     <td><c:out value="${user.name}"/></td>
                     <td><a href="mailto:${user.email}">${user.email}</a></td>
                     <td>${user.roles}</td>
-                    <td><input type="checkbox"
-                               <c:if test="${user.enabled}">checked</c:if> id="${user.id}"/></td>
+                    <td><input type="checkbox" class="chbck"
+                               <c:if test="${user.enabled}">checked</c:if> id="chbck${user.id}"
+                    </td>
                     <td><fmt:formatDate value="${user.registered}" pattern="dd-MMMM-yyyy"/></td>
                     <td><a><span class="fa fa-pencil"></span></a></td>
-                    <td><a class="delete" ><span class="fa fa-remove"></span></a></td>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </c:forEach>
         </table>
     </div>
 </div>
+
+<%--onClick="setEnabled(${user.id}, document.getElementById('chbck${user.id}').checked, document.getElementById('chbck${user.id}'))"--%>
 
 <div class="modal fade" tabindex="-1" id="editRow">
     <div class="modal-dialog">
