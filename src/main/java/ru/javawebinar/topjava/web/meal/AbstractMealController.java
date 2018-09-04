@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.AbstractAjaxController;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -19,7 +20,7 @@ import static ru.javawebinar.topjava.util.Util.orElse;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
-public abstract class AbstractMealController {
+public abstract class AbstractMealController extends AbstractAjaxController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -81,4 +82,6 @@ public abstract class AbstractMealController {
                 orElse(startTime, LocalTime.MIN), orElse(endTime, LocalTime.MAX)
         );
     }
+
+
 }

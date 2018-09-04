@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class MealTo extends BaseTo implements Serializable {
     private static final long serialVersionUID = 2L;
 
+    @NotNull
     private LocalDateTime dateTime;
 
     @NotBlank

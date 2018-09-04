@@ -24,7 +24,13 @@ $(function () {
         "info": true,
         "columns": [
             {
-                "data": "dateTime"
+                "data": "dateTime",
+                "render": function (data, type, row) {
+                    if (type === "display") {
+                        return moment(data).format("YYYY-MM-DD HH:mm:ss");
+                    }
+                    return data;
+                }
             },
             {
                 "data": "description"

@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.web;
 
 import org.junit.jupiter.api.Test;
-import ru.javawebinar.topjava.MealTestData;
-import ru.javawebinar.topjava.util.MealsUtil;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,13 +30,21 @@ class RootControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void testMealsUnAuth() throws Exception {
+        mockMvc.perform(get("/meals"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+
+    @Test
     void testMeals() throws Exception {
         mockMvc.perform(get("/meals")
                 .with(userAuth(USER)))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
-                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", MealsUtil.getWithExceeded(MealTestData.MEALS, USER.getCaloriesPerDay())));
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"));
     }
 
 }
