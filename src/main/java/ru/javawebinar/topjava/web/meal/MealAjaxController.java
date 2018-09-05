@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -40,7 +41,7 @@ public class MealAjaxController extends AbstractMealController {
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid MealTo mealTo, BindingResult result) {
         if (result.hasErrors()) {
-            return super.getErrorResponseEntity(result);
+            return ValidationUtil.getErrorResponseEntity(result);
         }
         if (mealTo.isNew()) {
             super.create(MealsUtil.createNewFromTo(mealTo));
@@ -49,9 +50,6 @@ public class MealAjaxController extends AbstractMealController {
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
 
     @Override
     @GetMapping(value = "/filter", produces = MediaType.APPLICATION_JSON_VALUE)

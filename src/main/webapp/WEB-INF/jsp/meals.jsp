@@ -21,22 +21,26 @@
                             <div class="form-group">
                                 <label class="col-form-label" for="startDate"><spring:message
                                         code="meal.startDate"/></label>
-                                <input class="form-control col-6" type="text" name="startDate" id="startDate" autocomplete="off">
+                                <input class="form-control col-6" type="text" name="startDate" id="startDate"
+                                       autocomplete="off">
 
                                 <label class="col-form-label" for="endDate"><spring:message
                                         code="meal.endDate"/></label>
-                                <input class="form-control col-6" type="text" name="endDate" id="endDate" autocomplete="off">
+                                <input class="form-control col-6" type="text" name="endDate" id="endDate"
+                                       autocomplete="off">
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">
                                 <label class="col-form-label" for="startTime"><spring:message
                                         code="meal.startTime"/></label>
-                                <input class="form-control col-6" type="text" name="startTime" id="startTime" autocomplete="off">
+                                <input class="form-control col-6" type="text" name="startTime" id="startTime"
+                                       autocomplete="off">
 
                                 <label class="col-form-label" for="endTime"><spring:message
                                         code="meal.endTime"/></label>
-                                <input class="form-control col-6" type="text" name="endTime" id="endTime" autocomplete="off">
+                                <input class="form-control col-6" type="text" name="endTime" id="endTime"
+                                       autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -91,7 +95,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle"><spring:message code="meal.add"/></h4>
+                <h4 class="modal-title" id="modalTitle"></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -133,32 +137,19 @@
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 <script type="text/javascript">
-    var i18n = [];
     i18n["addTitle"] = '<spring:message code="meal.add"/>';
     i18n["editTitle"] = '<spring:message code="meal.edit"/>';
 
-    <c:forEach var="key" items='<%=new String[]{"common.deleted","common.saved","common.enabled","common.disabled","common.errorStatus"}%>'>
-    i18n["${key}"] = "<spring:message code="${key}"/>";
-    </c:forEach>
-
-    jQuery('#startTime').datetimepicker({
-        datepicker:false,
-        format:'H:i'
+    jQuery('#startTime, #endTime').datetimepicker({
+        datepicker: false,
+        format: 'H:i'
     });
-    jQuery('#endTime').datetimepicker({
-        datepicker:false,
-        format:'H:i'
-    });
-    jQuery('#startDate').datetimepicker({
-        timepicker:false,
-        format:'Y-m-d'
-    });
-    jQuery('#endDate').datetimepicker({
-        timepicker:false,
-        format:'Y-m-d'
+    jQuery('#startDate, #endDate').datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d'
     });
     jQuery('#dateTime').datetimepicker({
-        format:'Y-m-d H:i:s'
+        format: 'Y-m-d H:i:s'
     });
 </script>
 </html>
