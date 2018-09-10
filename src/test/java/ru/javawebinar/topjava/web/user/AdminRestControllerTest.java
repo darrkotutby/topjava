@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -11,6 +13,8 @@ import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,6 +30,9 @@ import static ru.javawebinar.topjava.UserTestData.*;
 class AdminRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminRestController.REST_URL + '/';
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     void testGet() throws Exception {
@@ -133,6 +140,22 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void testCreateWithDuplicatedEmail() throws Exception {
+        User expected = new User(null, "New", "admin@gmail.com", "newPass", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(expected, "newPass")))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
+    }
+
+    @Test
     void testUpdateByWrongValue() throws Exception {
         User updated = new User(USER);
         updated.setName(null);
@@ -148,6 +171,23 @@ class AdminRestControllerTest extends AbstractControllerTest {
         assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
         assertTrue(returnedErrorInfo.getDetail().contains("name must not be blank"));
         assertTrue(returnedErrorInfo.getDetail().contains("email must not be blank"));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void testUpdateWithDuplicatedEmail() throws Exception {
+        User updated = new User(USER);
+        updated.setEmail("admin@gmail.com");
+        ResultActions action = mockMvc.perform(put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(updated, "newPass")))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
     }
 
     @Test

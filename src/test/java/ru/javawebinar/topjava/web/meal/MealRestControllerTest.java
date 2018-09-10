@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -121,6 +123,23 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void testCreateWithDuplicatedDateTime() throws Exception {
+        Meal created = getCreated();
+        created.setDateTime(MEAL1.getDateTime());
+
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("Meal with this date/time already exists"));
+    }
+
+    @Test
     void testUpdateWithWrongData() throws Exception {
         Meal updated = getUpdated();
         updated.setDateTime(null);
@@ -139,6 +158,24 @@ class MealRestControllerTest extends AbstractControllerTest {
         assertTrue(returnedErrorInfo.getDetail().contains("description must not be blank"));
         assertTrue(returnedErrorInfo.getDetail().contains("calories must not be null"));
     }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void testUpdateWithDuplicatedDateTime() throws Exception {
+        Meal updated = getUpdated();
+        updated.setDateTime(MEAL2.getDateTime());
+
+        ResultActions action = mockMvc.perform(put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("Meal with this date/time already exists"));
+    }
+
 
     @Test
     void testGetAll() throws Exception {

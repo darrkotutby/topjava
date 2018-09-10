@@ -47,7 +47,7 @@ public class MealRestController extends AbstractMealController {
         if (result.hasErrors()) {
             throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
-        super.update(meal, id);
+        super.update(meal, id, null);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +57,7 @@ public class MealRestController extends AbstractMealController {
             throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
-        Meal created = super.create(meal);
+        Meal created = super.create(meal, null);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")

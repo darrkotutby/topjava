@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.MealDataException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,14 +40,14 @@ public class MealAjaxController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@Valid Meal meal, BindingResult result) {
+    public void createOrUpdate(@Valid Meal meal, BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody());
         }
         if (meal.isNew()) {
-            super.create(meal);
+            super.create(meal, request);
         } else {
-            super.update(meal, meal.getId());
+            super.update(meal, meal.getId(), request);
         }
     }
 

@@ -3,12 +3,16 @@ package ru.javawebinar.topjava.web.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.UserDataException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -18,6 +22,9 @@ public abstract class AbstractUserController {
 
     @Autowired
     private UserService service;
+
+    @Autowired
+    MessageSource messageSource;
 
     public List<User> getAll() {
         log.info("getAll");
@@ -29,13 +36,13 @@ public abstract class AbstractUserController {
         return service.get(id);
     }
 
-    public User create(User user) {
+    public User create(User user, HttpServletRequest request) {
         log.info("create {}", user);
         checkNew(user);
         try {
             return service.create(user);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e);
+            checkForMailDuplicate(e, request);
         }
         return null;
     }
@@ -45,24 +52,24 @@ public abstract class AbstractUserController {
         service.delete(id);
     }
 
-    public void update(User user, int id) {
+    public void update(User user, int id, HttpServletRequest request) {
         log.info("update {} with id={}", user, id);
 
         assureIdConsistent(user, id);
         try {
             service.update(user);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e);
+            checkForMailDuplicate(e, request);
         }
     }
 
-    public void update(UserTo userTo, int id) {
+    public void update(UserTo userTo, int id, HttpServletRequest request) {
         log.info("update {} with id={}", userTo, id);
         assureIdConsistent(userTo, id);
         try {
             service.update(userTo);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e);
+            checkForMailDuplicate(e, request);
         }
     }
 
@@ -77,9 +84,11 @@ public abstract class AbstractUserController {
     }
 
 
-    private void checkForMailDuplicate(RuntimeException e) {
-        if (e.getMessage().contains("users_unique_email_idx")) {
-            throw new UserDataException("User with the same e-mail already registered");
+    private void checkForMailDuplicate(RuntimeException e, HttpServletRequest request) {
+        Locale locale = request == null ? Locale.ENGLISH : request.getLocale();
+        String message = messageSource.getMessage("user.duplicatedEmail", null, locale);
+        if (ValidationUtil.getRootCause(e).getMessage().contains("users_unique_email_idx")) {
+            throw new UserDataException(message);
         }
         throw e;
     }

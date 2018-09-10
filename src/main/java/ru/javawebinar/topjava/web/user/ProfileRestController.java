@@ -38,7 +38,7 @@ public class ProfileRestController extends AbstractUserController {
             throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
-        super.update(userTo, SecurityUtil.authUserId());
+        super.update(userTo, SecurityUtil.authUserId(), null);
     }
 
     @GetMapping(value = "/text")

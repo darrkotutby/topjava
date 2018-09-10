@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +25,9 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    @Autowired
+    MessageSource messageSource;
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
     private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
@@ -71,5 +76,14 @@ public class ExceptionInfoHandler {
     public ErrorInfo illegalUserData(HttpServletRequest req, UserDataException e) {
         return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR);
     }
+
+    /*@ExceptionHandler(UserDuplicatedEmailException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorInfo duplicatedEmail(HttpServletRequest req, UserDuplicatedEmailException e) {
+
+        String message = messageSource.getMessage("user.duplicatedEmail", null, req.getLocale());
+        return logAndGetErrorInfo(req, new UserDuplicatedEmailException(message), true, VALIDATION_ERROR);
+    }
+*/
 
 }

@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
@@ -79,4 +81,22 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         assertTrue(returnedErrorInfo.getDetail().contains("name must not be blank"));
         assertTrue(returnedErrorInfo.getDetail().contains("email must not be blank"));
     }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void testUpdateWithDuplicatedEmail() throws Exception {
+        UserTo updatedTo = new UserTo(null, "newName", "admin@gmail.com", "newPassword", 1500);
+
+        ResultActions action = mockMvc.perform(put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(USER))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
+    }
+
 }

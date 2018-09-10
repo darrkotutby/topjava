@@ -38,7 +38,7 @@ public class AdminRestController extends AbstractUserController {
             throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
-        User created = super.create(user);
+        User created = super.create(user, null);
 
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.setLocation(uriOfNewResource);
@@ -65,7 +65,7 @@ public class AdminRestController extends AbstractUserController {
             throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
-        super.update(user, id);
+        super.update(user, id, null);
     }
 
     @Override

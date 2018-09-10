@@ -48,7 +48,7 @@ public class RootController extends AbstractUserController {
         if (result.hasErrors()) {
             return "profile";
         } else {
-            super.update(userTo, SecurityUtil.authUserId());
+            super.update(userTo, SecurityUtil.authUserId(), null);
             SecurityUtil.get().update(userTo);
             status.setComplete();
             return "redirect:meals";
@@ -68,7 +68,7 @@ public class RootController extends AbstractUserController {
             model.addAttribute("register", true);
             return "profile";
         } else {
-            super.create(UserUtil.createNewFromTo(userTo));
+            super.create(UserUtil.createNewFromTo(userTo), null);
             status.setComplete();
             return "redirect:login?message=app.registered&username=" + userTo.getEmail();
         }

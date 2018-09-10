@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.UserDataException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -38,15 +39,15 @@ public class AdminAjaxController extends AbstractUserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result) {
+    public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody());
         }
 
             if (userTo.isNew()) {
-                super.create(UserUtil.createNewFromTo(userTo));
+                super.create(UserUtil.createNewFromTo(userTo), request);
             } else {
-                super.update(userTo, userTo.getId());
+                super.update(userTo, userTo.getId(), request);
             }
 
         return new ResponseEntity<>(HttpStatus.OK);
