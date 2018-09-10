@@ -3,11 +3,15 @@ package ru.javawebinar.topjava.web.meal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.MealDataException;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,15 +41,22 @@ public class MealRestController extends AbstractMealController {
         return super.getAll();
     }
 
-    @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Meal meal, @PathVariable("id") int id) {
+    public void update(@PathVariable("id") int id, @RequestBody @Valid Meal meal,  BindingResult result) {
+        if (result.hasErrors()) {
+            throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+        }
         super.update(meal, id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal) {
+    public ResponseEntity<Meal> createWithLocation(@RequestBody @Valid Meal meal, BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+        }
+
         Meal created = super.create(meal);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -42,4 +42,5 @@ public class UserTestData {
     public static String jsonWithPassword(User user, String passw) {
         return JsonUtil.writeAdditionProps(user, "password", passw);
     }
+
 }

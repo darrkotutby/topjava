@@ -6,11 +6,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.Collections;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -85,6 +89,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void testUpdate() throws Exception {
         User updated = new User(USER);
         updated.setName("UpdatedName");
+        updated.setPassword("UpdatedName");
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         mockMvc.perform(put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,6 +114,40 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
         assertMatch(returned, expected);
         assertMatch(userService.getAll(), ADMIN, expected, USER);
+    }
+
+    @Test
+    void testCreateWithWrongData() throws Exception {
+        User newUser = new User();
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(newUser, "newPass")))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("name must not be blank"));
+        assertTrue(returnedErrorInfo.getDetail().contains("email must not be blank"));
+    }
+
+    @Test
+    void testUpdateByWrongValue() throws Exception {
+        User updated = new User(USER);
+        updated.setName(null);
+        updated.setEmail(null);
+        ResultActions action = mockMvc.perform(put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("name must not be blank"));
+        assertTrue(returnedErrorInfo.getDetail().contains("email must not be blank"));
     }
 
     @Test

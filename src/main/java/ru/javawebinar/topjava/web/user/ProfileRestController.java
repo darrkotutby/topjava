@@ -2,10 +2,15 @@ package ru.javawebinar.topjava.web.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.UserDataException;
 import ru.javawebinar.topjava.web.SecurityUtil;
+
+import javax.validation.Valid;
 
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
@@ -27,7 +32,12 @@ public class ProfileRestController extends AbstractUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo) {
+    public void update(@RequestBody @Valid UserTo userTo, BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+        }
+
         super.update(userTo, SecurityUtil.authUserId());
     }
 

@@ -8,11 +8,15 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -86,6 +90,7 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void testCreate() throws Exception {
         Meal created = getCreated();
+
         ResultActions action = mockMvc.perform(post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
@@ -96,6 +101,43 @@ class MealRestControllerTest extends AbstractControllerTest {
 
         assertMatch(returned, created);
         assertMatch(service.getAll(ADMIN_ID), ADMIN_MEAL2, created, ADMIN_MEAL1);
+    }
+
+    @Test
+    void testCreateWithWrongData() throws Exception {
+        Meal created = new Meal();
+
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("dateTime must not be null"));
+        assertTrue(returnedErrorInfo.getDetail().contains("description must not be blank"));
+        assertTrue(returnedErrorInfo.getDetail().contains("calories must not be null"));
+    }
+
+    @Test
+    void testUpdateWithWrongData() throws Exception {
+        Meal updated = getUpdated();
+        updated.setDateTime(null);
+        updated.setDescription(null);
+        updated.setCalories(null);
+
+        ResultActions action = mockMvc.perform(put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isBadRequest());
+
+        ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertTrue(returnedErrorInfo.getDetail().contains("dateTime must not be null"));
+        assertTrue(returnedErrorInfo.getDetail().contains("description must not be blank"));
+        assertTrue(returnedErrorInfo.getDetail().contains("calories must not be null"));
     }
 
     @Test
