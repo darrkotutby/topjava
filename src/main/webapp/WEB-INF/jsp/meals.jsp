@@ -9,6 +9,10 @@
 <script type="text/javascript" src="resources/js/mealDatatables.js" defer></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
+Language : <a href="meals?language=en">English</a>|<a href="meals?language=ru">Russian</a>
+Current Locale : ${pageContext.response.locale}
+
+
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>

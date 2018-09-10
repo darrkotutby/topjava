@@ -17,6 +17,7 @@
                 </button>
             </form:form>
         </sec:authorize>
+
         <sec:authorize access="isAnonymous()">
             <form:form class="form-inline my-2" id="login_form" action="spring_security_check" method="post">
                 <input class="form-control mr-1" type="text" placeholder="Email" name="username">
@@ -24,7 +25,18 @@
                 <button class="btn btn-success" type="submit">
                     <span class="fa fa-sign-in"></span>
                 </button>
+
+                <%--<li class="nav-item dropdown">
+                    <a class="dropdown-toggle nav-link my-1 ml-2" data-toggle="dropdown">ru</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="/login?lang=en">English</a>
+                        <a class="dropdown-item" href="/login?lang=ru">Русский</a>
+                    </div>
+                </li>
+--%>
+
             </form:form>
         </sec:authorize>
+
     </div>
 </nav>

@@ -9,6 +9,9 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
+Language : <a href="profile?language=en">English</a>|<a href="profile?language=ru">Russian</a>
+Current Locale : ${pageContext.response.locale}
+
 <div class="jumbotron pt-4">
     <div class="container">
         <%--@elvariable id="userTo" type="ru.javawebinar.topjava.to.UserTo"--%>
