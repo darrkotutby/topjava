@@ -1,10 +1,41 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="topjava" tagdir="/WEB-INF/tags" %>
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
+
+<script type="text/javascript" defer>
+
+    var err="<spring:message code="user.duplicatedEmail"/>";
+
+    $(document).ready(function () {
+        // check name availability on focus lost
+        const $validator = $("#registerForm").validate();
+        $('#email').blur(function () {
+            let errors;
+
+            if (!checkAvailability()) {
+                errors = {email: err};
+                $validator.showErrors(errors);
+            }
+        });
+    });
+
+
+    function checkAvailability() {
+        let errors;
+        $.getJSON("emailavailability", {email: $('#email').val(), id: 0}, function (availability) {
+                return availability.available;
+
+            }
+        );
+    }
+
+</script>
+
 
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
@@ -15,8 +46,10 @@
         <div class="row">
             <div class="col-5 offset-3">
                 <h3>${userTo.name} <spring:message code="${register ? 'app.register' : 'app.profile'}"/></h3>
-                <form:form class="form-group" modelAttribute="userTo" method="post" action="${register ? 'register' : 'profile'}"
-                           charset="utf-8" accept-charset="UTF-8">
+
+                <form:form class="form-group" modelAttribute="userTo" method="post"
+                           action="${register ? 'register' : 'profile'}"
+                           charset="utf-8" accept-charset="UTF-8" id="registerForm">
 
                     <topjava:inputField labelCode="user.name" name="name"/>
                     <topjava:inputField labelCode="user.email" name="email"/>

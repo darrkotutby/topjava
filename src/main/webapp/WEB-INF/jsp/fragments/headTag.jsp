@@ -26,4 +26,6 @@
     <script type="text/javascript" src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js" defer></script>
     <script type="text/javascript" src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
     <script type="text/javascript" src="webjars/datetimepicker/2.5.14/build/jquery.datetimepicker.full.min.js" defer></script>
+    <script type="text/javascript" src="webjars/jquery-validation/1.17.0/jquery.validate.js" defer></script>
+
 </head>
