@@ -7,9 +7,6 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
-Language : <a href="login?language=en">English</a>|<a href="login?language=ru">Russian</a>
-Current Locale : ${pageContext.response.locale}
-
 <div class="jumbotron pt-0">
     <div class="container">
         <c:if test="${param.error}">

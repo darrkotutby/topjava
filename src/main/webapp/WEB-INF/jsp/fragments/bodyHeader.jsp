@@ -3,6 +3,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+Language : <a href="${requestScope['javax.servlet.forward.request_uri']}?language=en">English</a>|<a href="${requestScope['javax.servlet.forward.request_uri']}?language=ru">Russian</a>
+Current Locale : ${pageContext.response.locale}
+
 <nav class="navbar navbar-dark bg-dark py-0">
     <div class="container">
         <a href="meals" class="navbar-brand"><img src="resources/images/icon-meal.png"><spring:message code="app.title"/></a>
@@ -39,4 +42,5 @@
         </sec:authorize>
 
     </div>
+
 </nav>
