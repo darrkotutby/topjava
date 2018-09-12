@@ -3,6 +3,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
+
+
 Language : <a href="${requestScope['javax.servlet.forward.request_uri']}?language=en">English</a>|<a href="${requestScope['javax.servlet.forward.request_uri']}?language=ru">Russian</a>
 Current Locale : ${pageContext.response.locale}
 
