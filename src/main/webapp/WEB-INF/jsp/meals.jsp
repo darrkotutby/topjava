@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
@@ -79,7 +79,7 @@
 
                     <div class="form-group">
                         <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input class="form-control" id="dateTime" name="dateTime"
+                        <input class="form-control" id="dateTime" name="dateTime" autocomplete="off"
                                placeholder="<spring:message code="meal.dateTime"/>">
                     </div>
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.UserDataException;
+import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,10 +32,10 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody @Valid User user,  BindingResult result) {
+    public ResponseEntity<User> createWithLocation(@RequestBody @Valid User user, BindingResult result) {
 
         if (result.hasErrors()) {
-            throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
         User created = super.create(user, null);
@@ -62,7 +62,7 @@ public class AdminRestController extends AbstractUserController {
     public void update(@PathVariable("id") int id, @RequestBody @Valid User user, BindingResult result) {
 
         if (result.hasErrors()) {
-            throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
         super.update(user, id, null);

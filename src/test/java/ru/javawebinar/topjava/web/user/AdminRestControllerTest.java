@@ -13,8 +13,6 @@ import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,9 +28,6 @@ import static ru.javawebinar.topjava.UserTestData.*;
 class AdminRestControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL = AdminRestController.REST_URL + '/';
-
-    @PersistenceContext
-    EntityManager entityManager;
 
     @Test
     void testGet() throws Exception {
@@ -130,7 +125,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(jsonWithPassword(newUser, "newPass")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
@@ -147,11 +142,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(jsonWithPassword(expected, "newPass")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
-        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.DATA_ERROR);
         assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
     }
 
@@ -164,7 +159,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
@@ -182,11 +177,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(jsonWithPassword(updated, "newPass")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
-        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.DATA_ERROR);
         assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
     }
 

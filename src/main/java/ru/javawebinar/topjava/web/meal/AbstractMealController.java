@@ -4,16 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.MealDataException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,12 +24,10 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
     private final Logger log = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private MealService service;
-
     @Autowired
     MessageSource messageSource;
+    @Autowired
+    private MealService service;
 
     public Meal get(int id) {
         int userId = SecurityUtil.authUserId();
@@ -69,7 +66,7 @@ public abstract class AbstractMealController {
         try {
             service.update(meal, userId);
         } catch (RuntimeException e) {
-            checkForDateTimeDuplicate(e,locale);
+            checkForDateTimeDuplicate(e, locale);
         }
     }
 
@@ -97,7 +94,7 @@ public abstract class AbstractMealController {
         }
         String message = messageSource.getMessage("meal.duplicatedDateTime", null, locale);
         if (ValidationUtil.getRootCause(e).getMessage().contains("meals_unique_user_datetime_idx")) {
-            throw new MealDataException(message);
+            throw new DataIntegrityViolationException(message);
         }
         throw e;
     }
