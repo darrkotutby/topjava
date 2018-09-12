@@ -7,36 +7,6 @@
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
 
-<script type="text/javascript" defer>
-
-    var err="<spring:message code="user.duplicatedEmail"/>";
-
-    $(document).ready(function () {
-        // check name availability on focus lost
-        const $validator = $("#registerForm").validate();
-        $('#email').blur(function () {
-            let errors;
-
-            if (!checkAvailability()) {
-                errors = {email: err};
-                $validator.showErrors(errors);
-            }
-        });
-    });
-
-
-    function checkAvailability() {
-        let errors;
-        $.getJSON("emailavailability", {email: $('#email').val(), id: 0}, function (availability) {
-                return availability.available;
-
-            }
-        );
-    }
-
-</script>
-
-
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
@@ -50,7 +20,7 @@
                 <form:form class="form-group" modelAttribute="userTo" method="post"
                            action="${register ? 'register' : 'profile'}"
                            charset="utf-8" accept-charset="UTF-8" id="registerForm">
-
+                    <input type="hidden" id="id" name="id" value="${userTo.id}">
                     <topjava:inputField labelCode="user.name" name="name"/>
                     <topjava:inputField labelCode="user.email" name="email"/>
                     <topjava:inputField labelCode="user.password" name="password" inputType="password"/>

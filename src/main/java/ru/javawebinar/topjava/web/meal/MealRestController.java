@@ -9,7 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.MealDataException;
+import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -43,9 +43,9 @@ public class MealRestController extends AbstractMealController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@PathVariable("id") int id, @RequestBody @Valid Meal meal,  BindingResult result) {
+    public void update(@PathVariable("id") int id, @RequestBody @Valid Meal meal, BindingResult result) {
         if (result.hasErrors()) {
-            throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
         super.update(meal, id, null);
     }
@@ -54,7 +54,7 @@ public class MealRestController extends AbstractMealController {
     public ResponseEntity<Meal> createWithLocation(@RequestBody @Valid Meal meal, BindingResult result) {
 
         if (result.hasErrors()) {
-            throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody().replace("<br>", "; "));
         }
 
         Meal created = super.create(meal, null);

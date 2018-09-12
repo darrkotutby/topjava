@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.*;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
+import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -64,26 +67,4 @@ public class ExceptionInfoHandler {
     public ErrorInfo handleError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, true, APP_ERROR);
     }
-
-    @ExceptionHandler(MealDataException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorInfo illegalMealData(HttpServletRequest req, MealDataException e) {
-        return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR);
-    }
-
-    @ExceptionHandler(UserDataException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorInfo illegalUserData(HttpServletRequest req, UserDataException e) {
-        return logAndGetErrorInfo(req, e, true, VALIDATION_ERROR);
-    }
-
-    /*@ExceptionHandler(UserDuplicatedEmailException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorInfo duplicatedEmail(HttpServletRequest req, UserDuplicatedEmailException e) {
-
-        String message = messageSource.getMessage("user.duplicatedEmail", null, req.getLocale());
-        return logAndGetErrorInfo(req, new UserDuplicatedEmailException(message), true, VALIDATION_ERROR);
-    }
-*/
-
 }

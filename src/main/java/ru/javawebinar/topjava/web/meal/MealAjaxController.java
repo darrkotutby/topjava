@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.MealDataException;
+import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +44,7 @@ public class MealAjaxController extends AbstractMealController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void createOrUpdate(@Valid Meal meal, BindingResult result, HttpServletRequest request, HttpServletResponse response, Locale locale) {
         if (result.hasErrors()) {
-            throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody());
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody());
         }
         if (meal.isNew()) {
             super.create(meal, locale);

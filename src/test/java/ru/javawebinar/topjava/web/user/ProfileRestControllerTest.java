@@ -73,7 +73,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER))
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
@@ -91,12 +91,12 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER))
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
 
         assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
-        assertTrue(returnedErrorInfo.getDetail().contains("User with the same email already registered"));
+        assertTrue(returnedErrorInfo.getDetail().contains("email User with the same e-mail already registered"));
     }
 
 }

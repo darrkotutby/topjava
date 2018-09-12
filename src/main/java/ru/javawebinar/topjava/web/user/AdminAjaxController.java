@@ -9,9 +9,8 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.UserDataException;
+import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
@@ -42,14 +41,14 @@ public class AdminAjaxController extends AbstractUserController {
     @PostMapping
     public ResponseEntity<String> createOrUpdate(@Valid UserTo userTo, BindingResult result, Locale locale) {
         if (result.hasErrors()) {
-            throw new UserDataException(ValidationUtil.getErrorResponse(result).getBody());
+            throw new IllegalRequestDataException(ValidationUtil.getErrorResponse(result).getBody());
         }
 
-            if (userTo.isNew()) {
-                super.create(UserUtil.createNewFromTo(userTo), locale);
-            } else {
-                super.update(userTo, userTo.getId(), locale);
-            }
+        if (userTo.isNew()) {
+            super.create(UserUtil.createNewFromTo(userTo), locale);
+        } else {
+            super.update(userTo, userTo.getId(), locale);
+        }
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -60,7 +59,6 @@ public class AdminAjaxController extends AbstractUserController {
     public void enable(@PathVariable("id") int id, @RequestParam("enabled") boolean enabled) {
         super.enable(id, enabled);
     }
-
 
 
 }

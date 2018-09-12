@@ -100,4 +100,9 @@ $(function () {
     $('#dateTime').datetimepicker({
         format: 'Y-m-d H:i'
     });
+
+
+    $.datetimepicker.setLocale('ru');
+    jQuery.datetimepicker.setLocale('ru');
+
 });

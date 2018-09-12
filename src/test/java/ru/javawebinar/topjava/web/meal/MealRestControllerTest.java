@@ -113,7 +113,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
                 .with(userHttpBasic(ADMIN)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
         assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
@@ -132,10 +132,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(created))
                 .with(userHttpBasic(USER)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
-        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.DATA_ERROR);
         assertTrue(returnedErrorInfo.getDetail().contains("Meal with this date/time already exists"));
     }
 
@@ -150,7 +150,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
                 .with(userHttpBasic(USER)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
         assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
@@ -169,10 +169,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated))
                 .with(userHttpBasic(USER)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
 
         ErrorInfo returnedErrorInfo = readFromJson(action, ErrorInfo.class);
-        assertEquals(returnedErrorInfo.getType(), ErrorType.VALIDATION_ERROR);
+        assertEquals(returnedErrorInfo.getType(), ErrorType.DATA_ERROR);
         assertTrue(returnedErrorInfo.getDetail().contains("Meal with this date/time already exists"));
     }
 
