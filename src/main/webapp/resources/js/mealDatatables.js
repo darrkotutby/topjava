@@ -68,6 +68,20 @@ $(function () {
         "initComplete": makeEditable
     });
 
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+     $.datetimepicker.setLocale(getCookie("org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE")||"en");
+
+
+
+
+
 //  http://xdsoft.net/jqplugins/datetimepicker/
     const startDate = $('#startDate');
     const endDate = $('#endDate');
@@ -102,7 +116,7 @@ $(function () {
     });
 
 
-    $.datetimepicker.setLocale('ru');
-    jQuery.datetimepicker.setLocale('ru');
+    /*$.datetimepicker.setLocale('ru');
+    jQuery.datetimepicker.setLocale('ru');*/
 
 });
