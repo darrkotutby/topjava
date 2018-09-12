@@ -10,10 +10,12 @@ import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.MealDataException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping(value = "/ajax/profile/meals")
@@ -40,14 +42,14 @@ public class MealAjaxController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createOrUpdate(@Valid Meal meal, BindingResult result, HttpServletRequest request) {
+    public void createOrUpdate(@Valid Meal meal, BindingResult result, HttpServletRequest request, HttpServletResponse response, Locale locale) {
         if (result.hasErrors()) {
             throw new MealDataException(ValidationUtil.getErrorResponse(result).getBody());
         }
         if (meal.isNew()) {
-            super.create(meal, request);
+            super.create(meal, locale);
         } else {
-            super.update(meal, meal.getId(), request);
+            super.update(meal, meal.getId(), locale);
         }
     }
 

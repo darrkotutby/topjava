@@ -10,7 +10,6 @@ import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.UserDataException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,13 +35,13 @@ public abstract class AbstractUserController {
         return service.get(id);
     }
 
-    public User create(User user, HttpServletRequest request) {
+    public User create(User user, Locale locale) {
         log.info("create {}", user);
         checkNew(user);
         try {
             return service.create(user);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e, request);
+            checkForMailDuplicate(e, locale);
         }
         return null;
     }
@@ -52,24 +51,24 @@ public abstract class AbstractUserController {
         service.delete(id);
     }
 
-    public void update(User user, int id, HttpServletRequest request) {
+    public void update(User user, int id, Locale locale) {
         log.info("update {} with id={}", user, id);
 
         assureIdConsistent(user, id);
         try {
             service.update(user);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e, request);
+            checkForMailDuplicate(e, locale);
         }
     }
 
-    public void update(UserTo userTo, int id, HttpServletRequest request) {
+    public void update(UserTo userTo, int id, Locale locale) {
         log.info("update {} with id={}", userTo, id);
         assureIdConsistent(userTo, id);
         try {
             service.update(userTo);
         } catch (RuntimeException e) {
-            checkForMailDuplicate(e, request);
+            checkForMailDuplicate(e, locale);
         }
     }
 
@@ -84,8 +83,11 @@ public abstract class AbstractUserController {
     }
 
 
-    private void checkForMailDuplicate(RuntimeException e, HttpServletRequest request) {
-        Locale locale = request == null ? Locale.ENGLISH : request.getLocale();
+    private void checkForMailDuplicate(RuntimeException e, Locale locale) {
+
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
         String message = messageSource.getMessage("user.duplicatedEmail", null, locale);
         if (ValidationUtil.getRootCause(e).getMessage().contains("users_unique_email_idx")) {
             throw new UserDataException(message);

@@ -50,26 +50,26 @@ public abstract class AbstractMealController {
         return MealsUtil.getWithExceeded(service.getAll(userId), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public Meal create(Meal meal, HttpServletRequest request) {
+    public Meal create(Meal meal, Locale locale) {
         int userId = SecurityUtil.authUserId();
         checkNew(meal);
         log.info("create {} for user {}", meal, userId);
         try {
             return service.create(meal, userId);
         } catch (RuntimeException e) {
-            checkForDateTimeDuplicate(e, request);
+            checkForDateTimeDuplicate(e, locale);
         }
         return null;
     }
 
-    public void update(Meal meal, int id, HttpServletRequest request) {
+    public void update(Meal meal, int id, Locale locale) {
         int userId = SecurityUtil.authUserId();
         assureIdConsistent(meal, id);
         log.info("update {} for user {}", meal, userId);
         try {
             service.update(meal, userId);
         } catch (RuntimeException e) {
-            checkForDateTimeDuplicate(e, request);
+            checkForDateTimeDuplicate(e,locale);
         }
     }
 
@@ -91,8 +91,10 @@ public abstract class AbstractMealController {
         );
     }
 
-    private void checkForDateTimeDuplicate(RuntimeException e, HttpServletRequest request) {
-        Locale locale = request == null ? Locale.ENGLISH : request.getLocale();
+    private void checkForDateTimeDuplicate(RuntimeException e, Locale locale) {
+        if (locale == null) {
+            locale = Locale.ENGLISH;
+        }
         String message = messageSource.getMessage("meal.duplicatedDateTime", null, locale);
         if (ValidationUtil.getRootCause(e).getMessage().contains("meals_unique_user_datetime_idx")) {
             throw new MealDataException(message);
