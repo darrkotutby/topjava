@@ -25,7 +25,31 @@
     <script type="text/javascript" src="webjars/datatables/1.10.19/js/jquery.dataTables.min.js" defer></script>
     <script type="text/javascript" src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js" defer></script>
     <script type="text/javascript" src="webjars/noty/3.1.4/lib/noty.min.js" defer></script>
-    <script type="text/javascript" src="webjars/datetimepicker/2.5.14/build/jquery.datetimepicker.full.min.js" defer></script>
+    <script type="text/javascript" src="webjars/datetimepicker/2.5.14/build/jquery.datetimepicker.full.min.js"
+            defer></script>
     <script type="text/javascript" src="webjars/jquery-validation/1.17.0/jquery.validate.js" defer></script>
+
+
+    <script type="text/javascript" defer>
+        $(document).ready(function () {
+            $('#email').blur(function () {
+                $.ajax({
+                    url: 'emailavailability',
+                    async: false,
+                    type: 'GET',
+                    data: {email: $('#email').val(), id: $('#id').val()},
+                })
+                    .done(function (availability) {
+                        const $validator = $("#registerForm").validate();
+                        const err = "<spring:message code="user.duplicatedEmail"/>";
+                        let errors;
+                        if (!availability) {
+                            errors = {email: err};
+                        }
+                        $validator.showErrors(errors);
+                    });
+            });
+        });
+    </script>
 
 </head>
